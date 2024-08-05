@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: StoreAPI
+  datasource:
+    url: jdbc:postgresql://localhost:2345/postgres
+    username: postgres
+    password: local
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    properties:
+      hibernate:
+        format_sql: true
+
+config:
+  jwt:
+    secretKey: "SE9XX0XPTKDFVE9FQUXJVKVFOICPXPTKDFVELVU"
+    issuer: "mottoshop"
