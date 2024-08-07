@@ -1,14 +1,18 @@
 package dev.mottolab.storeapi.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
-    @PostMapping("/user/createOrder")
-    public void creteOrder(){
+    @PostMapping("/user/basket/createOrder")
+    public void creteOrderByBasketIds(){}
 
-    }
+    @PostMapping("/user/topup/createOrder")
+    public void creteOrderByTopup(){}
+
+    @GetMapping("/user/checkOrder/{id}")
+    public void checkOrderStatus(@PathVariable int id){}
+
+
 }
