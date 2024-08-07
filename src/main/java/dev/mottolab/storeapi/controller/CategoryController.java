@@ -1,7 +1,7 @@
 package dev.mottolab.storeapi.controller;
 
 import dev.mottolab.storeapi.dto.request.category.CategoryCreateDTO;
-import dev.mottolab.storeapi.dto.request.product.ProductUpdateDTO;
+import dev.mottolab.storeapi.dto.request.category.CategoryUpdateDTO;
 import dev.mottolab.storeapi.dto.response.category.CategoryDTO;
 import dev.mottolab.storeapi.entity.CategoryEntity;
 import dev.mottolab.storeapi.exception.CategoryNotExist;
@@ -69,7 +69,7 @@ public class CategoryController {
     @PreAuthorize("hasAuthority('CATEGORY_UPDATE')")
     public CategoryDTO updateProduct(
             @PathVariable UUID id,
-            @RequestBody ProductUpdateDTO payload
+            @RequestBody CategoryUpdateDTO payload
     ) throws CategoryNotExist {
         Optional<CategoryEntity> enitity = this.categoryService.getCategoryById(id);
         if(enitity.isEmpty()){
