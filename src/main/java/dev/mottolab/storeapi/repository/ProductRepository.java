@@ -1,6 +1,6 @@
 package dev.mottolab.storeapi.repository;
 
-import dev.mottolab.storeapi.enitity.ProductEntity;
+import dev.mottolab.storeapi.entity.ProductEntity;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 

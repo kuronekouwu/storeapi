@@ -1,6 +1,6 @@
 package dev.mottolab.storeapi.service;
 
-import dev.mottolab.storeapi.enitity.ProductEntity;
+import dev.mottolab.storeapi.entity.ProductEntity;
 import dev.mottolab.storeapi.repository.ProductRepository;
 import dev.mottolab.storeapi.service.utils.SlugService;
 import org.springframework.data.domain.PageRequest;

@@ -3,7 +3,7 @@ package dev.mottolab.storeapi.controller;
 import dev.mottolab.storeapi.dto.request.category.CategoryCreateDTO;
 import dev.mottolab.storeapi.dto.request.product.ProductUpdateDTO;
 import dev.mottolab.storeapi.dto.response.category.CategoryDTO;
-import dev.mottolab.storeapi.enitity.CategoryEntity;
+import dev.mottolab.storeapi.entity.CategoryEntity;
 import dev.mottolab.storeapi.exception.CategoryNotExist;
 import dev.mottolab.storeapi.service.CategoryService;
 import jakarta.validation.Valid;

@@ -1,6 +1,6 @@
 package dev.mottolab.storeapi.repository;
 
-import dev.mottolab.storeapi.enitity.IdentifyEntity;
+import dev.mottolab.storeapi.entity.IdentifyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

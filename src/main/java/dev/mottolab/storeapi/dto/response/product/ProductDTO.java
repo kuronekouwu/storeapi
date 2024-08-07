@@ -1,6 +1,6 @@
 package dev.mottolab.storeapi.dto.response.product;
 
-import dev.mottolab.storeapi.enitity.ProductEntity;
+import dev.mottolab.storeapi.entity.ProductEntity;
 import lombok.Getter;
 
 import java.util.UUID;

@@ -1,6 +1,6 @@
 package dev.mottolab.storeapi.user;
 
-import dev.mottolab.storeapi.enitity.IdentifyEntity;
+import dev.mottolab.storeapi.entity.IdentifyEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

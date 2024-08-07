@@ -1,6 +1,6 @@
 package dev.mottolab.storeapi.dto.response.category;
 
-import dev.mottolab.storeapi.enitity.CategoryEntity;
+import dev.mottolab.storeapi.entity.CategoryEntity;
 import lombok.Getter;
 
 import java.util.UUID;

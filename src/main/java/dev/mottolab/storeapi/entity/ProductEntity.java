@@ -1,4 +1,4 @@
-package dev.mottolab.storeapi.enitity;
+package dev.mottolab.storeapi.entity;
 
 import dev.mottolab.storeapi.service.utils.UUIDService;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package dev.mottolab.storeapi.enitity;
+package dev.mottolab.storeapi.entity;
 
 import dev.mottolab.storeapi.user.UserRole;
 import jakarta.persistence.*;
