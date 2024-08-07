@@ -15,7 +15,10 @@ public enum UserRole {
     ADMIN(Set.of(
             UserPermission.PRODUCT_CREATE,
             UserPermission.PRODUCT_DELETE,
-            UserPermission.PRODUCT_UPDATE
+            UserPermission.PRODUCT_UPDATE,
+            UserPermission.CATEGORY_CREATE,
+            UserPermission.CATEGORY_UPDATE,
+            UserPermission.CATEGORY_DELETE
     ));
 
     @Getter

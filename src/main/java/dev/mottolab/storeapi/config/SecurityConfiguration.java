@@ -7,6 +7,7 @@ import dev.mottolab.storeapi.service.UserInfoService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,7 +15,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,14 +43,11 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
         return http.authorizeHttpRequests(
-                auth -> auth.requestMatchers(
-                        "/authen/**",
-                        "/products/**"
-                        )
-                        .permitAll()
-                        .requestMatchers(
-                                "/user/**"
-                        ).authenticated()
+                auth -> auth.requestMatchers("/authen/**", "/products/**", "/category/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/products/create", "/category/create").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/products/**", "/category/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/products/**", "/category/**").authenticated()
+                        .requestMatchers("/user/**").authenticated()
                 )
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

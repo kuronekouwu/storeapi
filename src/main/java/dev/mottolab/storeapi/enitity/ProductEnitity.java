@@ -1,9 +1,6 @@
 package dev.mottolab.storeapi.enitity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +13,7 @@ import java.util.UUID;
 public class ProductEnitity {
     @Id
     private UUID id;
-    @Column(unique = true, nullable = false, length = 64)
+    @Column(unique = true, nullable = false, length = 255)
     private String slug;
     @Column(nullable = false)
     private String name;
@@ -26,4 +23,7 @@ public class ProductEnitity {
     private String image;
     @Column(nullable = false)
     private Double price = 0.0;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private CategoryEnitity category;
 }

@@ -8,7 +8,11 @@ public enum UserPermission {
     // Product
     PRODUCT_CREATE("product:create"),
     PRODUCT_UPDATE("product:update"),
-    PRODUCT_DELETE("product:delete");
+    PRODUCT_DELETE("product:delete"),
+    // Category
+    CATEGORY_CREATE("category:create"),
+    CATEGORY_UPDATE("category:update"),
+    CATEGORY_DELETE("category:delete");
 
     @Getter
     private final String permission;
