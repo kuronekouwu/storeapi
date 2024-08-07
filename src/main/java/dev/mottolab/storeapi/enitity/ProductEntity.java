@@ -24,6 +24,8 @@ public class ProductEntity {
     private String image;
     @Column(nullable = false)
     private Double price = 0.0;
+    @Column(nullable = false)
+    private Integer stock = 0;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private CategoryEntity category;
