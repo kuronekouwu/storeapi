@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "user_info")
 @Getter
@@ -19,4 +22,6 @@ public class UserInfoEntity {
     private UserRole roles;
     @OneToOne(mappedBy = "user")
     private IdentifyEntity identity;
+    @OneToMany(mappedBy = "user")
+    private List<BasketEntity> baskets = new ArrayList<>();
 }

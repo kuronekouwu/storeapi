@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -29,6 +30,9 @@ public class ProductEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private CategoryEntity category;
+    @OneToMany(mappedBy = "product")
+    private List<BasketEntity> baskets;
+
     @PrePersist
     protected void onCreate() {
         this.id = UUIDService.generateUUIDV7();
