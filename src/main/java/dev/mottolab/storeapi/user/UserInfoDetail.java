@@ -1,6 +1,7 @@
 package dev.mottolab.storeapi.user;
 
 import dev.mottolab.storeapi.entity.IdentifyEntity;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,17 +9,19 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class UserInfoDetail implements UserDetails {
-    @lombok.Getter
-    private UUID userId;
+    @Getter
+    private UUID authenticateId;
+    @Getter Integer userId;
     private String email;
     private String password;
-    @lombok.Getter
+    @Getter
     private String displayName;
-    @lombok.Getter
+    @Getter
     private UserRole roles;
 
     public UserInfoDetail(IdentifyEntity iden) {
-        this.userId = iden.getId();
+        this.authenticateId = iden.getId();
+        this.userId = iden.getUser().getId();
         this.email = iden.getEmail();
         this.password = iden.getPassword();
         this.displayName = iden.getUser().getDisplayName();
@@ -28,7 +31,6 @@ public class UserInfoDetail implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.getAuthorities();
-
     }
 
     @Override
