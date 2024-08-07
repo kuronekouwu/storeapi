@@ -9,7 +9,7 @@ import lombok.Setter;
 @Table(name = "user_info")
 @Getter
 @Setter
-public class UserInfoEnitity {
+public class UserInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -21,5 +21,5 @@ public class UserInfoEnitity {
     private UserRole roles;
 
     @OneToOne(mappedBy = "user")
-    private IdentifyEnitity identity;
+    private IdentifyEntity identity;
 }

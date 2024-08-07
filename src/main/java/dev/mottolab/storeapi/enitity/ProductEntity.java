@@ -10,7 +10,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "products")
-public class ProductEnitity {
+public class ProductEntity {
     @Id
     private UUID id;
     @Column(unique = true, nullable = false, length = 255)
@@ -25,5 +25,5 @@ public class ProductEnitity {
     private Double price = 0.0;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
-    private CategoryEnitity category;
+    private CategoryEntity category;
 }

@@ -1,11 +1,10 @@
 package dev.mottolab.storeapi.user;
 
-import dev.mottolab.storeapi.enitity.IdentifyEnitity;
+import dev.mottolab.storeapi.enitity.IdentifyEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 public class UserInfoDetail implements UserDetails {
@@ -18,7 +17,7 @@ public class UserInfoDetail implements UserDetails {
     @lombok.Getter
     private UserRole roles;
 
-    public UserInfoDetail(IdentifyEnitity iden) {
+    public UserInfoDetail(IdentifyEntity iden) {
         this.userId = UUID.fromString(iden.getId());
         this.email = iden.getEmail();
         this.password = iden.getPassword();

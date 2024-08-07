@@ -3,7 +3,7 @@ package dev.mottolab.storeapi.controller;
 import dev.mottolab.storeapi.dto.request.category.CategoryCreateDTO;
 import dev.mottolab.storeapi.dto.request.product.ProductUpdateDTO;
 import dev.mottolab.storeapi.dto.response.category.CategoryDTO;
-import dev.mottolab.storeapi.enitity.CategoryEnitity;
+import dev.mottolab.storeapi.enitity.CategoryEntity;
 import dev.mottolab.storeapi.exception.CategoryNotExist;
 import dev.mottolab.storeapi.service.CategoryService;
 import jakarta.validation.Valid;
@@ -30,9 +30,9 @@ public class CategoryController {
     @PreAuthorize("hasAuthority('CATEGORY_CREATE')")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryEnitity createProduct(@Valid @RequestBody CategoryCreateDTO payload) {
+    public CategoryEntity createProduct(@Valid @RequestBody CategoryCreateDTO payload) {
         // Create entity
-        CategoryEnitity entity = new CategoryEnitity();
+        CategoryEntity entity = new CategoryEntity();
         entity.setName(payload.name());
         entity.setDescription(payload.description());
         // Create slug
@@ -56,7 +56,7 @@ public class CategoryController {
     @GetMapping("/getInfo/slug/{slug}")
     @ResponseBody
     public CategoryDTO getCategoryInfo(@PathVariable String slug) throws CategoryNotExist {
-        Optional<CategoryEnitity> info = this.categoryService.getProductBySlug(slug);
+        Optional<CategoryEntity> info = this.categoryService.getProductBySlug(slug);
         if(!info.isPresent()) {
             throw new CategoryNotExist();
         }
@@ -70,12 +70,12 @@ public class CategoryController {
             @PathVariable Integer id,
             @RequestBody ProductUpdateDTO payload
     ) throws CategoryNotExist {
-        Optional<CategoryEnitity> enitity = this.categoryService.getCategoryById(id);
+        Optional<CategoryEntity> enitity = this.categoryService.getCategoryById(id);
         if(enitity.isEmpty()){
             throw new CategoryNotExist();
         }
 
-        CategoryEnitity entity = enitity.get();
+        CategoryEntity entity = enitity.get();
         entity.setName(payload.name());
         entity.setDescription(payload.description());
 
@@ -88,7 +88,7 @@ public class CategoryController {
     public void deleteProduct(
             @PathVariable Integer id
     ) throws CategoryNotExist {
-        Optional<CategoryEnitity> entity = this.categoryService.getCategoryById(id);
+        Optional<CategoryEntity> entity = this.categoryService.getCategoryById(id);
         if(entity.isEmpty()){
             throw new CategoryNotExist();
         }

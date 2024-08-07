@@ -8,7 +8,7 @@ import lombok.Setter;
 @Table(name = "identify")
 @Getter
 @Setter
-public class IdentifyEnitity {
+public class IdentifyEntity {
     @Id
     private String id;
 
@@ -27,5 +27,5 @@ public class IdentifyEnitity {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserInfoEnitity user;
+    private UserInfoEntity user;
 }

@@ -1,7 +1,6 @@
 package dev.mottolab.storeapi.service;
 
-import dev.mottolab.storeapi.dto.request.category.CategoryCreateDTO;
-import dev.mottolab.storeapi.enitity.CategoryEnitity;
+import dev.mottolab.storeapi.enitity.CategoryEntity;
 import dev.mottolab.storeapi.repository.CategoryRepository;
 import dev.mottolab.storeapi.service.utils.SlugService;
 import org.springframework.data.domain.PageRequest;
@@ -18,19 +17,19 @@ public class CategoryService {
         this.repo = repo;
     }
 
-    public CategoryEnitity updateCategory(CategoryEnitity entity) {
+    public CategoryEntity updateCategory(CategoryEntity entity) {
         return this.repo.save(entity);
     }
 
-    public List<CategoryEnitity> getAllCategory(Integer page, Integer size) {
+    public List<CategoryEntity> getAllCategory(Integer page, Integer size) {
         return this.repo.findAll(PageRequest.of(page, size)).getContent();
     }
 
-    public Optional<CategoryEnitity> getCategoryById(Integer id){
+    public Optional<CategoryEntity> getCategoryById(Integer id){
         return this.repo.findById(id);
     }
 
-    public Optional<CategoryEnitity> getProductBySlug(String slug){
+    public Optional<CategoryEntity> getProductBySlug(String slug){
         return this.repo.findBySlug(slug);
     }
 

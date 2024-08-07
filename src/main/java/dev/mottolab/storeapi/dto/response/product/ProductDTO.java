@@ -1,6 +1,6 @@
 package dev.mottolab.storeapi.dto.response.product;
 
-import dev.mottolab.storeapi.enitity.ProductEnitity;
+import dev.mottolab.storeapi.enitity.ProductEntity;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -14,7 +14,7 @@ public class ProductDTO {
     private final Double price;
     private final String image;
 
-    public ProductDTO(ProductEnitity entity) {
+    public ProductDTO(ProductEntity entity) {
         this.id = entity.getId();
         this.slug = entity.getSlug();
         this.name = entity.getName();

@@ -3,8 +3,8 @@ package dev.mottolab.storeapi.controller;
 import dev.mottolab.storeapi.dto.request.product.ProductCreateDTO;
 import dev.mottolab.storeapi.dto.request.product.ProductUpdateDTO;
 import dev.mottolab.storeapi.dto.response.product.ProductDTO;
-import dev.mottolab.storeapi.enitity.CategoryEnitity;
-import dev.mottolab.storeapi.enitity.ProductEnitity;
+import dev.mottolab.storeapi.enitity.CategoryEntity;
+import dev.mottolab.storeapi.enitity.ProductEntity;
 import dev.mottolab.storeapi.exception.ProductNotExist;
 import dev.mottolab.storeapi.repository.CategoryRepository;
 import dev.mottolab.storeapi.service.CategoryService;
@@ -43,7 +43,7 @@ public class ProductController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDTO createProduct(@Valid @RequestBody ProductCreateDTO payload) {
-        ProductEnitity entity = new ProductEnitity();
+        ProductEntity entity = new ProductEntity();
         entity.setId(UUIDService.generateUUIDV7());
         entity.setName(payload.name());
         entity.setDescription(payload.description());
@@ -52,7 +52,7 @@ public class ProductController {
         entity.setSlug(this.productService.createSlugName(payload.name()));
         if(payload.categoryId() != null){
             // Check category exist
-            Optional<CategoryEnitity> category = this.categoryService.getCategoryById(payload.categoryId());
+            Optional<CategoryEntity> category = this.categoryService.getCategoryById(payload.categoryId());
             category.ifPresent(entity::setCategory);
         }
 
@@ -81,7 +81,7 @@ public class ProductController {
     @GetMapping("/getInfo/slug/{slug}")
     @ResponseBody
     public ProductDTO getProduct(@PathVariable String slug) throws ProductNotExist {
-        Optional<ProductEnitity> product = this.productService.getProductBySlug(slug);
+        Optional<ProductEntity> product = this.productService.getProductBySlug(slug);
         if(product.isEmpty()){
             throw new ProductNotExist();
         }
@@ -95,19 +95,19 @@ public class ProductController {
             @PathVariable UUID id,
             @RequestBody  ProductUpdateDTO payload
     ) throws ProductNotExist {
-        Optional<ProductEnitity> enitity = this.productService.getProductById(id);
+        Optional<ProductEntity> enitity = this.productService.getProductById(id);
         if(enitity.isEmpty()){
             throw new ProductNotExist();
         }
 
-        ProductEnitity productEntity = enitity.get();
+        ProductEntity productEntity = enitity.get();
         productEntity.setName(payload.name());
         productEntity.setDescription(payload.description());
         productEntity.setPrice(payload.price());
         // Check category
         if(payload.categoryId() != null){
             // Check category exist
-            Optional<CategoryEnitity> category = this.categoryService.getCategoryById(payload.categoryId());
+            Optional<CategoryEntity> category = this.categoryService.getCategoryById(payload.categoryId());
             category.ifPresent(productEntity::setCategory);
         }
 
@@ -120,7 +120,7 @@ public class ProductController {
     public void deleteProduct(
             @PathVariable UUID id
     ) throws ProductNotExist {
-        Optional<ProductEnitity> productEnitity = this.productService.getProductById(id);
+        Optional<ProductEntity> productEnitity = this.productService.getProductById(id);
         if(productEnitity.isEmpty()){
             throw new ProductNotExist();
         }

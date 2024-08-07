@@ -1,6 +1,6 @@
 package dev.mottolab.storeapi.service;
 
-import dev.mottolab.storeapi.enitity.ProductEnitity;
+import dev.mottolab.storeapi.enitity.ProductEntity;
 import dev.mottolab.storeapi.repository.ProductRepository;
 import dev.mottolab.storeapi.service.utils.SlugService;
 import org.springframework.data.domain.PageRequest;
@@ -18,23 +18,23 @@ public class ProductService {
         this.repo = repo;
     }
 
-    public ProductEnitity updateProduct(ProductEnitity product){
+    public ProductEntity updateProduct(ProductEntity product){
         return this.repo.save(product);
     }
 
-    public List<ProductEnitity> getAllProducts(Integer page, Integer size){
+    public List<ProductEntity> getAllProducts(Integer page, Integer size){
         return this.repo.findAll(PageRequest.of(page, size)).getContent();
     }
 
-    public List<ProductEnitity> getAllProducts(Integer page, Integer size, Integer category){
+    public List<ProductEntity> getAllProducts(Integer page, Integer size, Integer category){
         return this.repo.findAllByCategoryId(category, PageRequest.of(page, size));
     }
 
-    public Optional<ProductEnitity> getProductById(UUID id){
+    public Optional<ProductEntity> getProductById(UUID id){
        return this.repo.findById(id);
     }
 
-    public Optional<ProductEnitity> getProductBySlug(String slug){
+    public Optional<ProductEntity> getProductBySlug(String slug){
         return this.repo.findBySlug(slug);
     }
 

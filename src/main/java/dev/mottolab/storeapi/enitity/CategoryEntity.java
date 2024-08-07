@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "catgories")
-public class CategoryEnitity {
+public class CategoryEntity {
     @Id
     @GeneratedValue
     private Integer id;
@@ -25,5 +25,5 @@ public class CategoryEnitity {
     @Column(nullable = true)
     private String description;
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private List<ProductEnitity> products;
+    private List<ProductEntity> products;
 }
