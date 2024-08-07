@@ -1,5 +1,6 @@
 package dev.mottolab.storeapi.enitity;
 
+import dev.mottolab.storeapi.service.utils.UUIDService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,4 +27,8 @@ public class ProductEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private CategoryEntity category;
+    @PrePersist
+    protected void onCreate() {
+        this.id = UUIDService.generateUUIDV7();
+    }
 }

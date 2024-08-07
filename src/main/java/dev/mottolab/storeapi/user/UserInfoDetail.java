@@ -18,7 +18,7 @@ public class UserInfoDetail implements UserDetails {
     private UserRole roles;
 
     public UserInfoDetail(IdentifyEntity iden) {
-        this.userId = UUID.fromString(iden.getId());
+        this.userId = iden.getId();
         this.email = iden.getEmail();
         this.password = iden.getPassword();
         this.displayName = iden.getUser().getDisplayName();

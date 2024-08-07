@@ -1,10 +1,13 @@
 package dev.mottolab.storeapi.enitity;
 
+import dev.mottolab.storeapi.service.utils.UUIDService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -12,8 +15,7 @@ import java.util.List;
 @Table(name = "catgories")
 public class CategoryEntity {
     @Id
-    @GeneratedValue
-    private Integer id;
+    private UUID id;
     @Column(
             nullable = false,
             unique = true,
@@ -26,4 +28,8 @@ public class CategoryEntity {
     private String description;
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private List<ProductEntity> products;
+    @PrePersist
+    protected void onCreate() {
+        this.id = UUIDService.generateUUIDV7();
+    }
 }

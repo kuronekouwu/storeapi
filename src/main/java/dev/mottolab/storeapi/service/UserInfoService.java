@@ -48,7 +48,7 @@ public class UserInfoService implements UserDetailsService {
 
         // Create user
         IdentifyEntity identify = new IdentifyEntity();
-        identify.setId(UUIDService.generateUUIDV7().toString());
+        identify.setId(UUIDService.generateUUIDV7());
         identify.setEmail(register.account());
         identify.setPassword(passwordEncoder.encode(register.password()));
         // Create user

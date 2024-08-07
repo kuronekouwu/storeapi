@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CategoryService {
@@ -25,7 +26,7 @@ public class CategoryService {
         return this.repo.findAll(PageRequest.of(page, size)).getContent();
     }
 
-    public Optional<CategoryEntity> getCategoryById(Integer id){
+    public Optional<CategoryEntity> getCategoryById(UUID id){
         return this.repo.findById(id);
     }
 
@@ -33,7 +34,7 @@ public class CategoryService {
         return this.repo.findBySlug(slug);
     }
 
-    public void deleteCategoryById(Integer id) {
+    public void deleteCategoryById(UUID id) {
         this.repo.deleteById(id);
     }
 

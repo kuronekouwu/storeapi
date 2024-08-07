@@ -1,8 +1,11 @@
 package dev.mottolab.storeapi.enitity;
 
+import dev.mottolab.storeapi.service.utils.UUIDService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "identify")
@@ -10,8 +13,7 @@ import lombok.Setter;
 @Setter
 public class IdentifyEntity {
     @Id
-    private String id;
-
+    private UUID id;
     @Column(
             nullable = false,
             name = "email",
@@ -24,8 +26,11 @@ public class IdentifyEntity {
             name = "password"
     )
     private String password;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserInfoEntity user;
+    @PrePersist
+    protected void onCreate() {
+        this.id = UUIDService.generateUUIDV7();
+    }
 }

@@ -3,9 +3,11 @@ package dev.mottolab.storeapi.dto.response.category;
 import dev.mottolab.storeapi.enitity.CategoryEntity;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
 public class CategoryDTO {
-    private final Integer id;
+    private final UUID id;
     private final String name;
     private final String description;
     private final String slug;

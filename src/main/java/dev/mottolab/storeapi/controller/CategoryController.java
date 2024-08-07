@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -30,14 +31,14 @@ public class CategoryController {
     @PreAuthorize("hasAuthority('CATEGORY_CREATE')")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryEntity createProduct(@Valid @RequestBody CategoryCreateDTO payload) {
+    public CategoryDTO createProduct(@Valid @RequestBody CategoryCreateDTO payload) {
         // Create entity
         CategoryEntity entity = new CategoryEntity();
         entity.setName(payload.name());
         entity.setDescription(payload.description());
         // Create slug
         entity.setSlug(this.categoryService.createSlugName(payload.name()));
-        return categoryService.updateCategory(entity);
+        return new CategoryDTO(categoryService.updateCategory(entity));
     }
 
     @GetMapping
@@ -67,7 +68,7 @@ public class CategoryController {
     @PutMapping("/getInfo/id/{id}")
     @PreAuthorize("hasAuthority('CATEGORY_UPDATE')")
     public CategoryDTO updateProduct(
-            @PathVariable Integer id,
+            @PathVariable UUID id,
             @RequestBody ProductUpdateDTO payload
     ) throws CategoryNotExist {
         Optional<CategoryEntity> enitity = this.categoryService.getCategoryById(id);
@@ -86,7 +87,7 @@ public class CategoryController {
     @PreAuthorize("hasAuthority('CATEGORY_DELETE')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(
-            @PathVariable Integer id
+            @PathVariable UUID id
     ) throws CategoryNotExist {
         Optional<CategoryEntity> entity = this.categoryService.getCategoryById(id);
         if(entity.isEmpty()){

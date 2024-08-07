@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.UUID;
+
 public record ProductUpdateDTO(
         @NotEmpty
         @NotNull
@@ -17,6 +19,6 @@ public record ProductUpdateDTO(
         Double price,
         @Min(1)
         @JsonProperty("category")
-        Integer categoryId
+        UUID categoryId
 ) {
 }
