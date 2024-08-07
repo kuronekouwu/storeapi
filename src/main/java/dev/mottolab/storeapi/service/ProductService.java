@@ -1,11 +1,8 @@
 package dev.mottolab.storeapi.service;
 
-import dev.mottolab.storeapi.dto.request.product.ProductCreateDTO;
-import dev.mottolab.storeapi.dto.request.product.ProductUpdateDTO;
 import dev.mottolab.storeapi.enitity.ProductEnitity;
 import dev.mottolab.storeapi.repository.ProductRepository;
 import dev.mottolab.storeapi.service.utils.SlugService;
-import dev.mottolab.storeapi.service.utils.UUIDService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -21,24 +18,16 @@ public class ProductService {
         this.repo = repo;
     }
 
-    public ProductEnitity createProduct(ProductCreateDTO payload){
-        ProductEnitity productEnitity = new ProductEnitity();
-        productEnitity.setId(UUIDService.generateUUIDV7());
-        productEnitity.setName(payload.name());
-        productEnitity.setDescription(payload.description());
-        productEnitity.setPrice(payload.price());
-        // Create slug
-        productEnitity.setSlug(createSlugName(payload.name()));
-        // Save it
-        return this.updateProduct(productEnitity);
-    }
-
     public ProductEnitity updateProduct(ProductEnitity product){
         return this.repo.save(product);
     }
 
     public List<ProductEnitity> getAllProducts(Integer page, Integer size){
         return this.repo.findAll(PageRequest.of(page, size)).getContent();
+    }
+
+    public List<ProductEnitity> getAllProducts(Integer page, Integer size, Integer category){
+        return this.repo.findAllByCategoryId(category, PageRequest.of(page, size));
     }
 
     public Optional<ProductEnitity> getProductById(UUID id){
@@ -53,7 +42,7 @@ public class ProductService {
         this.repo.deleteById(id);
     }
 
-    private String createSlugName(String name){
+    public String createSlugName(String name){
         String slugName = SlugService.toSlug(name);
         // Check if slug exist
         if(getProductBySlug(slugName).isPresent()){
@@ -64,5 +53,4 @@ public class ProductService {
 
         return slugName;
     }
-
 }
