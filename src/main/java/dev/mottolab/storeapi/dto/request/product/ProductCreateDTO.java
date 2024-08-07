@@ -1,13 +1,12 @@
 package dev.mottolab.storeapi.dto.request.product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.mottolab.storeapi.validator.UUIDValidator;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import org.hibernate.validator.constraints.Length;
 
-import java.util.UUID;
 
 public record ProductCreateDTO(
         @NotEmpty
@@ -18,8 +17,8 @@ public record ProductCreateDTO(
         @NotNull
         @Min(1)
         Double price,
-        @Min(1)
+        @UUIDValidator
         @JsonProperty("category")
-        UUID categoryId
+        String categoryId
 ) {
 }

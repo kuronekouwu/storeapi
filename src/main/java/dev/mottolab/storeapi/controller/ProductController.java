@@ -52,7 +52,7 @@ public class ProductController {
         entity.setSlug(this.productService.createSlugName(payload.name()));
         if(payload.categoryId() != null){
             // Check category exist
-            Optional<CategoryEntity> category = this.categoryService.getCategoryById(payload.categoryId());
+            Optional<CategoryEntity> category = this.categoryService.getCategoryById(UUID.fromString(payload.categoryId()));
             category.ifPresent(entity::setCategory);
         }
 
@@ -93,21 +93,21 @@ public class ProductController {
     @PreAuthorize("hasAuthority('PRODUCT_UPDATE')")
     public ProductDTO updateProduct(
             @PathVariable UUID id,
-            @RequestBody  ProductUpdateDTO payload
+            @Valid @RequestBody ProductUpdateDTO payload
     ) throws ProductNotExist {
-        Optional<ProductEntity> enitity = this.productService.getProductById(id);
-        if(enitity.isEmpty()){
+        Optional<ProductEntity> entity = this.productService.getProductById(id);
+        if(entity.isEmpty()){
             throw new ProductNotExist();
         }
 
-        ProductEntity productEntity = enitity.get();
+        ProductEntity productEntity = entity.get();
         productEntity.setName(payload.name());
         productEntity.setDescription(payload.description());
         productEntity.setPrice(payload.price());
         // Check category
         if(payload.categoryId() != null){
             // Check category exist
-            Optional<CategoryEntity> category = this.categoryService.getCategoryById(payload.categoryId());
+            Optional<CategoryEntity> category = this.categoryService.getCategoryById(UUID.fromString(payload.categoryId()));
             category.ifPresent(productEntity::setCategory);
         }
 
@@ -120,12 +120,12 @@ public class ProductController {
     public void deleteProduct(
             @PathVariable UUID id
     ) throws ProductNotExist {
-        Optional<ProductEntity> productEnitity = this.productService.getProductById(id);
-        if(productEnitity.isEmpty()){
+        Optional<ProductEntity> productEntity = this.productService.getProductById(id);
+        if(productEntity.isEmpty()){
             throw new ProductNotExist();
         }
 
         // Delete it
-        this.productService.deleteProduct(productEnitity.get().getId());
+        this.productService.deleteProduct(productEntity.get().getId());
     }
 }

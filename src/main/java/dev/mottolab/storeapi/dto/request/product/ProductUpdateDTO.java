@@ -1,6 +1,7 @@
 package dev.mottolab.storeapi.dto.request.product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.mottolab.storeapi.validator.UUIDValidator;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -17,8 +18,8 @@ public record ProductUpdateDTO(
         @NotNull
         @Min(1)
         Double price,
-        @Min(1)
+        @UUIDValidator
         @JsonProperty("category")
-        UUID categoryId
+        String categoryId
 ) {
 }
