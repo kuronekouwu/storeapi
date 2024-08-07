@@ -1,4 +1,4 @@
-package dev.mottolab.storeapi.dto.response;
+package dev.mottolab.storeapi.dto.response.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.mottolab.storeapi.user.UserPermission;

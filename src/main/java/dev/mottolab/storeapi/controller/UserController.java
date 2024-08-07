@@ -1,6 +1,6 @@
 package dev.mottolab.storeapi.controller;
 
-import dev.mottolab.storeapi.dto.response.UserInfoDTO;
+import dev.mottolab.storeapi.dto.response.user.UserInfoDTO;
 import dev.mottolab.storeapi.service.utils.UUIDService;
 import dev.mottolab.storeapi.user.UserInfoDetail;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
