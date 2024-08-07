@@ -1,4 +1,4 @@
-package dev.mottolab.storeapi.dto.response;
+package dev.mottolab.storeapi.dto.response.authen;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

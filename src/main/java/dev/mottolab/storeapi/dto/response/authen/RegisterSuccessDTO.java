@@ -1,4 +1,4 @@
-package dev.mottolab.storeapi.dto.response;
+package dev.mottolab.storeapi.dto.response.authen;
 
 import lombok.Getter;
 import lombok.Setter;

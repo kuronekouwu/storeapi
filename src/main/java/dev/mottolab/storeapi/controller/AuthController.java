@@ -2,8 +2,8 @@ package dev.mottolab.storeapi.controller;
 
 import dev.mottolab.storeapi.dto.request.authen.LoginDTO;
 import dev.mottolab.storeapi.dto.request.authen.RegisterDTO;
-import dev.mottolab.storeapi.dto.response.LoginSuccessDTO;
-import dev.mottolab.storeapi.dto.response.RegisterSuccessDTO;
+import dev.mottolab.storeapi.dto.response.authen.LoginSuccessDTO;
+import dev.mottolab.storeapi.dto.response.authen.RegisterSuccessDTO;
 import dev.mottolab.storeapi.exception.AccountAlreadyExist;
 import dev.mottolab.storeapi.service.JwtService;
 import dev.mottolab.storeapi.service.UserInfoService;
