@@ -15,6 +15,8 @@ import java.util.UUID;
 public class ProductEntity {
     @Id
     private UUID id;
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
     @Column(unique = true, nullable = false, length = 255)
     private String slug;
     @Column(nullable = false)
@@ -32,6 +34,8 @@ public class ProductEntity {
     private CategoryEntity category;
     @OneToMany(mappedBy = "product")
     private List<BasketEntity> baskets;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<OrderProductEntity> orderProduct;
 
     @PrePersist
     protected void onCreate() {
