@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "catgories")
+@Table(name = "categories")
 public class CategoryEntity {
     @Id
     private UUID id;
