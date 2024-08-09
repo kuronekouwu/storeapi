@@ -24,7 +24,14 @@ public class BasketService {
         return this.repo.findAlLByUserId(userId);
     }
 
+    public Optional<BasketEntity> getById(Integer id){
+        return this.repo.findById(id);
+    }
+
     public void updateBasket(BasketEntity entity){
         this.repo.save(entity);
+    }
+    public void deleteAllById(List<Integer> id){
+        this.repo.deleteAllById(id);
     }
 }
