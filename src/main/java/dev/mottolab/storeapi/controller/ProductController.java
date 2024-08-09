@@ -71,7 +71,7 @@ public class ProductController {
     @GetMapping("/getListByCategoryId")
     @ResponseBody
     public List<ProductDTO> getProducts(
-            @RequestParam @Min(1) Integer category,
+            @RequestParam UUID category,
             @RequestParam @Min(0) Integer page,
             @RequestParam @Min(1) @Max(100) Integer size
     ) {

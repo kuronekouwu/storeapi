@@ -5,6 +5,7 @@ import dev.mottolab.storeapi.repository.ProductRepository;
 import dev.mottolab.storeapi.service.utils.SlugService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ public class ProductService {
         this.repo = repo;
     }
 
+    @Transactional(readOnly = true)
     public ProductEntity updateProduct(ProductEntity product){
         return this.repo.save(product);
     }
@@ -26,7 +28,7 @@ public class ProductService {
         return this.repo.findAll(PageRequest.of(page, size)).getContent();
     }
 
-    public List<ProductEntity> getAllProducts(Integer page, Integer size, Integer category){
+    public List<ProductEntity> getAllProducts(Integer page, Integer size, UUID category){
         return this.repo.findAllByCategoryId(category, PageRequest.of(page, size));
     }
 
@@ -40,6 +42,11 @@ public class ProductService {
 
     public void deleteProduct(UUID id){
         this.repo.deleteById(id);
+    }
+
+    @Transactional()
+    public void updateManyProduct(List<ProductEntity> products){
+        this.repo.saveAll(products);
     }
 
     public String createSlugName(String name){

@@ -11,5 +11,5 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
     Optional<ProductEntity> findBySlug(String slug);
     Integer countBySlugContaining(String slug);
-    List<ProductEntity> findAllByCategoryId(Integer id, PageRequest pageRequest);
+    List<ProductEntity> findAllByCategoryId(UUID id, PageRequest pageRequest);
 }
