@@ -3,14 +3,29 @@ package dev.mottolab.storeapi.dto.request.order;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
-public record CreateOrderByBasketIdDTO(
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+public class CreateOrderByBasketIdDTO{
+        @NotEmpty
+        private String payMethod;
         @NotNull
         @NotEmpty
-        Integer id,
-        @NotNull
-        @NotEmpty
-        @Min(1)
-        Integer unit
-) {
+        private final List<BasketList> items = new ArrayList<>();
+
+        @Getter
+        @Setter
+        public static class BasketList {
+                @Min(1)
+                @NotNull
+                private Integer id;
+                @Min(1)
+                @NotNull
+                private Integer unit;
+        }
 }

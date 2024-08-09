@@ -1,11 +1,14 @@
 package dev.mottolab.storeapi.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "order_products")
+@Getter
+@Setter
 public class OrderProductEntity {
     @Id
     @GeneratedValue

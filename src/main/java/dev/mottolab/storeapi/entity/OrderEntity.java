@@ -2,19 +2,27 @@ package dev.mottolab.storeapi.entity;
 
 import dev.mottolab.storeapi.service.utils.UUIDService;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
+@Getter
+@Setter
 public class OrderEntity {
     @Id
     private UUID id;
     @Column(nullable = false)
-    private Double total;
+    private Double total = 0.0;
     @OneToMany(mappedBy = "order")
     private List<OrderProductEntity> orderProducts;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserInfoEntity user;
+
     @OneToOne
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private PaymentEntity payment;

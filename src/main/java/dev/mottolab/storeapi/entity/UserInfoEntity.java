@@ -24,4 +24,6 @@ public class UserInfoEntity {
     private IdentifyEntity identity;
     @OneToMany(mappedBy = "user")
     private List<BasketEntity> baskets = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<OrderEntity> orders = new ArrayList<>();
 }
