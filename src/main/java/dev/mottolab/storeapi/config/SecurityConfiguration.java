@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/products/create", "/category/create").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/products/**", "/category/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/products/**", "/category/**").authenticated()
-                        .requestMatchers("/user/**", "/baskets/**", "/order/**", "/payment/**").authenticated()
+                        .requestMatchers("/user/**", "/baskets/**", "/orders/**", "/payment/**").authenticated()
                 )
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
