@@ -44,7 +44,6 @@ public class ProductController {
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDTO createProduct(@Valid @RequestBody ProductCreateDTO payload) {
         ProductEntity entity = new ProductEntity();
-        entity.setId(UUIDService.generateUUIDV7());
         entity.setName(payload.name());
         entity.setDescription(payload.description());
         entity.setPrice(payload.price());
@@ -55,6 +54,7 @@ public class ProductController {
             Optional<CategoryEntity> category = this.categoryService.getCategoryById(UUID.fromString(payload.categoryId()));
             category.ifPresent(entity::setCategory);
         }
+
 
         return new ProductDTO(this.productService.updateProduct(entity));
     }
