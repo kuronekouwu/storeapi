@@ -12,7 +12,7 @@ import dev.mottolab.storeapi.exception.OrderAlreadyProceed;
 import dev.mottolab.storeapi.exception.OrderNotExist;
 import dev.mottolab.storeapi.exception.PaymentCreateFail;
 import dev.mottolab.storeapi.exception.PaymentMismatch;
-import dev.mottolab.storeapi.provider.scbopenapi.response.PaymentPromptpayCreateResult;
+import dev.mottolab.storeapi.provider.scbopenapi.response.PromptpayCreateResult;
 import dev.mottolab.storeapi.service.OrderService;
 import dev.mottolab.storeapi.service.PaymentService;
 import dev.mottolab.storeapi.user.UserInfoDetail;
@@ -22,7 +22,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -49,6 +48,8 @@ public class PaymentController {
         if(order.getStatus() != OrderStatus.PENDING){
             throw new OrderAlreadyProceed();
         }
+
+
 
         // TODO: Implement this method
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented");
@@ -117,7 +118,7 @@ public class PaymentController {
             UUID uid = UUID.randomUUID();
             String transactionId = Long.toString(uid.getMostSignificantBits(), 36).toUpperCase();
 
-            PaymentPromptpayCreateResult ppResult = this.paymentService.generatePromtpayQRCode(order, transactionId);
+            PromptpayCreateResult ppResult = this.paymentService.generatePromtpayQRCode(order, transactionId);
 
             // Get QRCode
             String ppRaw = ppResult.getData().getQrRawData();

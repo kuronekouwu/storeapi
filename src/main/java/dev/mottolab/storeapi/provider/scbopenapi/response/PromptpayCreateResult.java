@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PaymentPromptpayCreateResult {
-    public PaymentPromptpayCreateResult.Data data;
+public class PromptpayCreateResult {
+    public PromptpayCreateResult.Data data;
 
     @Getter
     @Setter

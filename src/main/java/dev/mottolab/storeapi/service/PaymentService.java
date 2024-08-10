@@ -5,7 +5,7 @@ import dev.mottolab.storeapi.entity.PaymentEntity;
 import dev.mottolab.storeapi.events.OrderQueueEvent;
 import dev.mottolab.storeapi.exception.PaymentCreateFail;
 import dev.mottolab.storeapi.provider.scbopenapi.SCBAPIProvider;
-import dev.mottolab.storeapi.provider.scbopenapi.response.PaymentPromptpayCreateResult;
+import dev.mottolab.storeapi.provider.scbopenapi.response.PromptpayCreateResult;
 import dev.mottolab.storeapi.repository.PaymentRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class PaymentService {
         this.event.publishEvent(new OrderQueueEvent(this, paymentEntity));
     }
 
-    public PaymentPromptpayCreateResult generatePromtpayQRCode(OrderEntity order, String transactionId) throws PaymentCreateFail {
+    public PromptpayCreateResult generatePromtpayQRCode(OrderEntity order, String transactionId) throws PaymentCreateFail {
         // Create class
         SCBAPIProvider.GeneratePromptpayQrCode pp = new SCBAPIProvider.GeneratePromptpayQrCode();
         pp.setAmount(order.getTotal());
@@ -40,7 +40,7 @@ public class PaymentService {
         pp.setRef2(transactionId);
 
         // Generate payment
-        PaymentPromptpayCreateResult ppResult =  this.scb.generatePromptpayQrCode(pp);
+        PromptpayCreateResult ppResult =  this.scb.generatePromptpayQrCode(pp);
         if(ppResult == null){
             throw new PaymentCreateFail();
         }

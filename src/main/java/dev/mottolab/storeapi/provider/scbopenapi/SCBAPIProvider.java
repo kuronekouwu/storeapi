@@ -1,7 +1,7 @@
 package dev.mottolab.storeapi.provider.scbopenapi;
 
 import dev.mottolab.storeapi.provider.scbopenapi.response.OAuth2Token;
-import dev.mottolab.storeapi.provider.scbopenapi.response.PaymentPromptpayCreateResult;
+import dev.mottolab.storeapi.provider.scbopenapi.response.PromptpayCreateResult;
 import lombok.Getter;
 import lombok.Setter;
 import okhttp3.*;
@@ -92,7 +92,7 @@ public class SCBAPIProvider {
         return false;
     }
 
-    public PaymentPromptpayCreateResult generatePromptpayQrCode(GeneratePromptpayQrCode payload){
+    public PromptpayCreateResult generatePromptpayQrCode(GeneratePromptpayQrCode payload){
         if(this.isExpired()){
             this.initToken();
         }
@@ -131,7 +131,7 @@ public class SCBAPIProvider {
             if(response.isSuccessful()) {
                 // Parse body
                 if(response.body() != null){
-                    return gson.fromJson(response.body().string(), PaymentPromptpayCreateResult.class);
+                    return gson.fromJson(response.body().string(), PromptpayCreateResult.class);
                 }
             }
         }catch (Exception e){
