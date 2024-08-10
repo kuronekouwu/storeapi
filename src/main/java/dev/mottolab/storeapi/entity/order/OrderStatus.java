@@ -1,8 +1,8 @@
-package dev.mottolab.storeapi.entity.payment;
+package dev.mottolab.storeapi.entity.order;
 
 import lombok.Getter;
 
-public enum PaymentStatus {
+public enum OrderStatus {
     PENDING,
     SUCCESS,
     REFUNDED;

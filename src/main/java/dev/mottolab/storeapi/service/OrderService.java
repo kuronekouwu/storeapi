@@ -2,9 +2,11 @@ package dev.mottolab.storeapi.service;
 
 import dev.mottolab.storeapi.dto.request.order.CreateOrderByBasketIdDTO;
 import dev.mottolab.storeapi.entity.*;
+import dev.mottolab.storeapi.entity.order.OrderStatus;
 import dev.mottolab.storeapi.repository.OrderProductRepository;
 import dev.mottolab.storeapi.repository.OrderRepository;
 import dev.mottolab.storeapi.user.UserInfoDetail;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -41,7 +44,8 @@ public class OrderService {
         UserInfoEntity userEntity = new UserInfoEntity();
         userEntity.setId(user.getUserId());
         orderEntity.setUser(userEntity);
-
+        orderEntity.setStatus(OrderStatus.PENDING);
+        // Create array list
         List<OrderProductEntity> orderProducts = new ArrayList<>();
         List<ProductEntity> products = new ArrayList<>();
 
@@ -61,14 +65,7 @@ public class OrderService {
                 }
 
                 // Create order product
-                OrderProductEntity orderProductEntity = new OrderProductEntity();
-                orderProductEntity.setProduct(product);
-                orderProductEntity.setOrder(orderEntity);
-                orderProductEntity.setQuantity(data.getUnit());
-                // Get information product
-                orderProductEntity.setProductName(product.getName());
-                orderProductEntity.setPrice(product.getPrice());
-                orderProductEntity.setProductImage(product.getImage());
+                OrderProductEntity orderProductEntity = getOrderProductEntity(data, product, orderEntity);
                 // Push data
                 orderProducts.add(orderProductEntity);
                 // Decrement stock product
@@ -78,25 +75,65 @@ public class OrderService {
             }
         }
 
-        // Save order first
-        OrderEntity order =  this.orderRepository.save(orderEntity);
-        // Save order product
-        this.orderProductRepository.saveAll(orderProducts);
-        // Update product
-        this.productService.updateManyProduct(products);
-        // Delete basket by id
-        this.basketService.deleteAllById(
-                payload
-                        .getItems()
-                        .stream()
-                        .map(CreateOrderByBasketIdDTO.BasketList::getId)
-                        .toList()
-        );
+        if(!orderProducts.isEmpty()){
+            // Save order first
+            this.updateOrder(orderEntity);
+            // Save order product
+            this.orderProductRepository.saveAll(orderProducts);
+            // Update product
+            this.productService.updateManyProduct(products);
+            // Delete basket by id
+            this.basketService.deleteAllById(
+                    payload
+                            .getItems()
+                            .stream()
+                            .map(CreateOrderByBasketIdDTO.BasketList::getId)
+                            .toList()
+            );
 
-        return order;
+            return this.orderRepository.findById(orderEntity.getId()).get();
+        }
+
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No product item found.");
     }
 
-    public List<OrderEntity> getAllOrders() {
-        return this.orderRepository.findAll();
+    public OrderEntity updateOrder(OrderEntity orderEntity) {
+        return this.orderRepository.save(orderEntity);
+    }
+
+    private static OrderProductEntity getOrderProductEntity(
+            CreateOrderByBasketIdDTO.BasketList data,
+            ProductEntity product,
+            OrderEntity orderEntity
+    ) {
+        OrderProductEntity orderProductEntity = new OrderProductEntity();
+        orderProductEntity.setProduct(product);
+        orderProductEntity.setOrder(orderEntity);
+        orderProductEntity.setQuantity(data.getUnit());
+        // Get information product
+        orderProductEntity.setProductName(product.getName());
+        orderProductEntity.setPrice(product.getPrice());
+        orderProductEntity.setProductImage(product.getImage());
+        return orderProductEntity;
+    }
+
+    public List<OrderEntity> getAllOrders(Integer userId, Integer page, Integer size) {
+        return this.orderRepository.findAllByUserId(userId, PageRequest.of(page, size));
+    }
+
+    public Optional<OrderEntity> getOrderByPaymentId(UUID paymentId) {
+        return this.orderRepository.findByPaymentId(paymentId);
+    }
+
+    public Optional<OrderEntity> getOrder(UUID orderId) {
+        return this.orderRepository.findById(orderId);
+    }
+
+    public Optional<OrderEntity> getOrder(Integer userId, UUID orderId) {
+        return this.orderRepository.findByUserIdAndId(userId, orderId);
+    }
+
+    public List<OrderProductEntity> getOrderProductsByOrderId(UUID orderId) {
+        return this.orderProductRepository.findAllByOrderId(orderId);
     }
 }
