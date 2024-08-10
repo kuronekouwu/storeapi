@@ -41,18 +41,12 @@ public class PaymentController {
             @AuthenticationPrincipal UserInfoDetail user,
             @Valid @RequestBody GeneratePaymentDTO payload
     ) throws OrderNotExist, PaymentCreateFail, PaymentMismatch, OrderAlreadyProceed {
-        Optional<OrderEntity> order = this.orderService.getOrder(
+        OrderEntity order = this.orderService.getOrder(
                 user.getUserId(),
                 UUID.fromString(payload.orderId())
-        );
-        if(order.isEmpty()){
-            throw new OrderNotExist();
-        }
+        ).orElseThrow(OrderNotExist::new);
 
-        // Get order info
-        OrderEntity orderEntity = order.get();
-
-        if(orderEntity.getStatus() != OrderStatus.PENDING){
+        if(order.getStatus() != OrderStatus.PENDING){
             throw new OrderAlreadyProceed();
         }
 
@@ -70,18 +64,12 @@ public class PaymentController {
             @AuthenticationPrincipal UserInfoDetail user,
             @Valid @RequestBody ProceedSlipVerifyDTO payload
     ) throws OrderNotExist, PaymentCreateFail, PaymentMismatch, OrderAlreadyProceed {
-        Optional<OrderEntity> order = this.orderService.getOrder(
+        OrderEntity order = this.orderService.getOrder(
                 user.getUserId(),
                 UUID.fromString(payload.orderId())
-        );
-        if(order.isEmpty()){
-            throw new OrderNotExist();
-        }
+        ).orElseThrow(OrderNotExist::new);
 
-        // Get order info
-        OrderEntity orderEntity = order.get();
-
-        if(orderEntity.getStatus() != OrderStatus.PENDING){
+        if(order.getStatus() != OrderStatus.PENDING){
             throw new OrderAlreadyProceed();
         }
 
@@ -94,18 +82,12 @@ public class PaymentController {
             @AuthenticationPrincipal UserInfoDetail user,
             @Valid @RequestBody ProceedTmnVoucherDTO payload
     ) throws OrderNotExist, PaymentCreateFail, OrderAlreadyProceed {
-        Optional<OrderEntity> order = this.orderService.getOrder(
+        OrderEntity order = this.orderService.getOrder(
                 user.getUserId(),
                 UUID.fromString(payload.orderId())
-        );
-        if(order.isEmpty()){
-            throw new OrderNotExist();
-        }
+        ).orElseThrow(OrderNotExist::new);
 
-        // Get order info
-        OrderEntity orderEntity = order.get();
-
-        if(orderEntity.getStatus() != OrderStatus.PENDING){
+        if(order.getStatus() != OrderStatus.PENDING){
             throw new OrderAlreadyProceed();
         }
 
@@ -118,46 +100,40 @@ public class PaymentController {
             @AuthenticationPrincipal UserInfoDetail user,
             @Valid @RequestBody GeneratePaymentDTO payload
     ) throws OrderNotExist, PaymentCreateFail, PaymentMismatch, OrderAlreadyProceed {
-        Optional<OrderEntity> order = this.orderService.getOrder(
+        OrderEntity order = this.orderService.getOrder(
                 user.getUserId(),
                 UUID.fromString(payload.orderId())
-        );
-        if(order.isEmpty()){
-            throw new OrderNotExist();
-        }
+        ).orElseThrow(OrderNotExist::new);
 
-        // Get order info
-        OrderEntity orderEntity = order.get();
-
-        if(orderEntity.getStatus() != OrderStatus.PENDING){
+        if(order.getStatus() != OrderStatus.PENDING){
             throw new OrderAlreadyProceed();
         }
 
         // Get payment
-        PaymentEntity payment = orderEntity.getPayment();
+        PaymentEntity payment = order.getPayment();
 
         if(payment == null){
             // Generate transaction ID
             UUID uid = UUID.randomUUID();
             String transactionId = Long.toString(uid.getMostSignificantBits(), 36).toUpperCase();
 
-            PaymentPromptpayCreateResult ppResult = this.paymentService.generatePromtpayQRCode(orderEntity, transactionId);
+            PaymentPromptpayCreateResult ppResult = this.paymentService.generatePromtpayQRCode(order, transactionId);
 
             // Get QRCode
             String ppRaw = ppResult.getData().getQrRawData();
 
             // Create entity
             PaymentEntity entity = new PaymentEntity();
-            entity.setAmount(orderEntity.getTotal());
+            entity.setAmount(order.getTotal());
             entity.setTransactionId(transactionId);
             entity.setMethod(PaymentMethod.PROMPTPAY);
             entity.setQrCode(ppRaw);
             // Set payment information
-            orderEntity.setPayment(entity);
+            order.setPayment(entity);
             // Save payment first
             this.paymentService.updatePayment(entity);
             // Update order
-            this.orderService.updateOrder(orderEntity);
+            this.orderService.updateOrder(order);
 
             return new PaymentPromtpayResultDTO(ppRaw);
         }

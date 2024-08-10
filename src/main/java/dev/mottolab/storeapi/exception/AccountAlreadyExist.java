@@ -1,14 +1,7 @@
 package dev.mottolab.storeapi.exception;
 
-public class AccountAlreadyExist extends Throwable {
-    private String account;
-
+public class AccountAlreadyExist extends RuntimeException {
     public AccountAlreadyExist(String account) {
-        super();
-        this.account = account;
-    }
-
-    public String getAccount() {
-        return account;
+        super("Account: " + account + " already exist.");
     }
 }

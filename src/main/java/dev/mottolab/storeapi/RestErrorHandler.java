@@ -49,49 +49,49 @@ public class RestErrorHandler {
     @ResponseBody
     public ResponseStatusException accountAlreadyExistHandler(AccountAlreadyExist ex) {
 
-        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account: " + ex.getAccount() + " already exist.");
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(ProductNotExist.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ResponseStatusException productNotExist() {
-        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not exist.");
+    public ResponseStatusException productNotExist(ProductNotExist ex) {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(CategoryNotExist.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ResponseStatusException categoryNotExist() {
-        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not exist.");
+    public ResponseStatusException categoryNotExist(CategoryNotExist ex) {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(OrderNotExist.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ResponseStatusException orderNoteExist() {
-        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not exist.");
+    public ResponseStatusException orderNoteExist(OrderNotExist ex) {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(OrderAlreadyProceed.class)
     @ResponseStatus(HttpStatus.GONE)
     @ResponseBody
     public ResponseStatusException orderAlreadyProceed(OrderAlreadyProceed ex) {
-        return new ResponseStatusException(HttpStatus.GONE, "Order has been already proceed.");
+        return new ResponseStatusException(HttpStatus.GONE, ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(PaymentCreateFail.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public ResponseStatusException paymentCreateFail() {
-        return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Create payment failed.");
+    public ResponseStatusException paymentCreateFail(PaymentCreateFail ex) {
+        return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(PaymentMismatch.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public ResponseStatusException paymentMismatch() {
-        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment mismatch.");
+    public ResponseStatusException paymentMismatch(PaymentMismatch ex) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(JWTDecodeException.class)
@@ -130,7 +130,7 @@ public class RestErrorHandler {
     public ResponseStatusException httpMessageNotReadableException(HttpMessageNotReadableException ex) {
         return new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
-                "Missing body"
+                ex.getLocalizedMessage()
         );
     }
 

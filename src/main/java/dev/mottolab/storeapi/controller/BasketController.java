@@ -51,20 +51,18 @@ public class BasketController {
             @Valid @RequestBody AddBasketDTO payload
     ) throws ProductNotExist {
         // Get product
-        Optional<ProductEntity> productEntity = this.productService.getProductById(UUID.fromString(payload.productId()));
-        if(productEntity.isEmpty()){
-            throw new ProductNotExist();
-        }
+        ProductEntity productEntity = this.productService.getProductById(UUID.fromString(payload.productId()))
+                .orElseThrow(ProductNotExist::new);
 
         // Check basket has exists
-        Optional<BasketEntity> basket = this.basketService.getBasketByUserIdAndProductId(user.getUserId(), productEntity.get().getId());
+        Optional<BasketEntity> basket = this.basketService.getBasketByUserIdAndProductId(user.getUserId(), productEntity.getId());
         if(basket.isEmpty()){
             // New user
             UserInfoEntity userEntity = new UserInfoEntity();
             userEntity.setId(user.getUserId());
-
+            // Add basket
             BasketEntity entity = new BasketEntity();
-            entity.setProduct(productEntity.get());
+            entity.setProduct(productEntity);
             entity.setUser(userEntity);
 
             // Save it

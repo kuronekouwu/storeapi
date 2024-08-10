@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -70,16 +69,12 @@ public class OrderController {
             @AuthenticationPrincipal UserInfoDetail user,
             @PathVariable UUID id
     ) throws OrderNotExist {
-        Optional<OrderEntity> order = this.orderService.getOrder(user.getUserId(), id);
-        if(order.isEmpty()){
-            throw new OrderNotExist();
-        }
-
-        OrderEntity orderEntity = order.get();
+        OrderEntity order = this.orderService.getOrder(user.getUserId(), id)
+                .orElseThrow(OrderNotExist::new);
 
         return new OrderResponseDTO(
-                orderEntity,
-                this.orderService.getOrderProductsByOrderId(orderEntity.getId())
+                order,
+                this.orderService.getOrderProductsByOrderId(order.getId())
         );
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -57,12 +56,10 @@ public class CategoryController {
     @GetMapping("/getInfo/slug/{slug}")
     @ResponseBody
     public CategoryDTO getCategoryInfo(@PathVariable String slug) throws CategoryNotExist {
-        Optional<CategoryEntity> info = this.categoryService.getProductBySlug(slug);
-        if(!info.isPresent()) {
-            throw new CategoryNotExist();
-        }
-
-        return new CategoryDTO(info.get());
+        return new CategoryDTO(
+                this.categoryService.getProductBySlug(slug)
+                        .orElseThrow(CategoryNotExist::new)
+        );
     }
 
     @PutMapping("/getInfo/id/{id}")
@@ -71,12 +68,9 @@ public class CategoryController {
             @PathVariable UUID id,
             @RequestBody CategoryUpdateDTO payload
     ) throws CategoryNotExist {
-        Optional<CategoryEntity> enitity = this.categoryService.getCategoryById(id);
-        if(enitity.isEmpty()){
-            throw new CategoryNotExist();
-        }
+        CategoryEntity entity = this.categoryService.getCategoryById(id)
+                .orElseThrow(CategoryNotExist::new);
 
-        CategoryEntity entity = enitity.get();
         entity.setName(payload.name());
         entity.setDescription(payload.description());
 
@@ -89,12 +83,11 @@ public class CategoryController {
     public void deleteProduct(
             @PathVariable UUID id
     ) throws CategoryNotExist {
-        Optional<CategoryEntity> entity = this.categoryService.getCategoryById(id);
-        if(entity.isEmpty()){
-            throw new CategoryNotExist();
-        }
-
         // Delete it
-        this.categoryService.deleteCategoryById(entity.get().getId());
+        this.categoryService.deleteCategoryById(
+                this.categoryService.getCategoryById(id)
+                    .orElseThrow(CategoryNotExist::new)
+                    .getId()
+        );
     }
 }

@@ -81,12 +81,8 @@ public class ProductController {
     @GetMapping("/getInfo/slug/{slug}")
     @ResponseBody
     public ProductDTO getProduct(@PathVariable String slug) throws ProductNotExist {
-        Optional<ProductEntity> product = this.productService.getProductBySlug(slug);
-        if(product.isEmpty()){
-            throw new ProductNotExist();
-        }
-
-        return new ProductDTO(product.get());
+        return new ProductDTO(this.productService.getProductBySlug(slug)
+                .orElseThrow(ProductNotExist::new));
     }
 
     @PutMapping("/getInfo/id/{id}")
@@ -95,23 +91,20 @@ public class ProductController {
             @PathVariable UUID id,
             @Valid @RequestBody ProductUpdateDTO payload
     ) throws ProductNotExist {
-        Optional<ProductEntity> entity = this.productService.getProductById(id);
-        if(entity.isEmpty()){
-            throw new ProductNotExist();
-        }
+        ProductEntity entity = this.productService.getProductById(id)
+                .orElseThrow(ProductNotExist::new);
 
-        ProductEntity productEntity = entity.get();
-        productEntity.setName(payload.name());
-        productEntity.setDescription(payload.description());
-        productEntity.setPrice(payload.price());
+        entity.setName(payload.name());
+        entity.setDescription(payload.description());
+        entity.setPrice(payload.price());
         // Check category
         if(payload.categoryId() != null){
             // Check category exist
             Optional<CategoryEntity> category = this.categoryService.getCategoryById(UUID.fromString(payload.categoryId()));
-            category.ifPresent(productEntity::setCategory);
+            category.ifPresent(entity::setCategory);
         }
 
-        return new ProductDTO(this.productService.updateProduct(productEntity));
+        return new ProductDTO(this.productService.updateProduct(entity));
     }
 
     @DeleteMapping("/getInfo/id/{id}")
@@ -120,12 +113,10 @@ public class ProductController {
     public void deleteProduct(
             @PathVariable UUID id
     ) throws ProductNotExist {
-        Optional<ProductEntity> productEntity = this.productService.getProductById(id);
-        if(productEntity.isEmpty()){
-            throw new ProductNotExist();
-        }
-
         // Delete it
-        this.productService.deleteProduct(productEntity.get().getId());
+        this.productService.deleteProduct(this.productService.getProductById(id)
+                .orElseThrow(ProductNotExist::new)
+                .getId()
+        );
     }
 }
