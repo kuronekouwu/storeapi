@@ -9,12 +9,11 @@ public class UUIDService {
         return UuidCreator.getTimeOrderedEpoch();
     }
 
-    public static long parseTimestampUUIDV7(String uuid){
+    public static long parseTimestampUUIDV7(UUID uid){
         // ChatGPT helped to me :')
-        // Parse UUID
-        UUID uuidV7 = UUID.fromString(uuid);
+
         // Extracting the most significant bits
-        long mostSignificantBits = uuidV7.getMostSignificantBits();
+        long mostSignificantBits = uid.getMostSignificantBits();
         // Extract timestamp
         return (mostSignificantBits >> 80) & 0xFFFFFFFFFFFFL;
     }

@@ -22,7 +22,7 @@ public class UserController {
         // Get user
         user.setAccount(principal.getUsername());
         user.setDisplayName(principal.getDisplayName());
-        user.setJoinedAt(new Date(UUIDService.parseTimestampUUIDV7(principal.getUserId().toString())));
+        user.setJoinedAt(new Date(UUIDService.parseTimestampUUIDV7(principal.getAuthenticateId())));
         user.setPermissions(principal.getRoles().getPermissions());
        return user;
     }
