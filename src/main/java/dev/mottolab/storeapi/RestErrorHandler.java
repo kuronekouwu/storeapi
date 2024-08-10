@@ -2,9 +2,7 @@ package dev.mottolab.storeapi;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import dev.mottolab.storeapi.dto.exception.*;
-import dev.mottolab.storeapi.exception.AccountAlreadyExist;
-import dev.mottolab.storeapi.exception.CategoryNotExist;
-import dev.mottolab.storeapi.exception.ProductNotExist;
+import dev.mottolab.storeapi.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -66,6 +64,34 @@ public class RestErrorHandler {
     @ResponseBody
     public ResponseStatusException categoryNotExist() {
         return new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not exist.");
+    }
+
+    @ExceptionHandler(OrderNotExist.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ResponseStatusException orderNoteExist() {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not exist.");
+    }
+
+    @ExceptionHandler(OrderAlreadyProceed.class)
+    @ResponseStatus(HttpStatus.GONE)
+    @ResponseBody
+    public ResponseStatusException orderAlreadyProceed(OrderAlreadyProceed ex) {
+        return new ResponseStatusException(HttpStatus.GONE, "Order has been already proceed.");
+    }
+
+    @ExceptionHandler(PaymentCreateFail.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ResponseStatusException paymentCreateFail() {
+        return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Create payment failed.");
+    }
+
+    @ExceptionHandler(PaymentMismatch.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ResponseStatusException paymentMismatch() {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Payment mismatch.");
     }
 
     @ExceptionHandler(JWTDecodeException.class)

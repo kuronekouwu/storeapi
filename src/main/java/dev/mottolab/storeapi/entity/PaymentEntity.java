@@ -1,24 +1,41 @@
 package dev.mottolab.storeapi.entity;
 
 import dev.mottolab.storeapi.entity.payment.PaymentMethod;
-import dev.mottolab.storeapi.entity.payment.PaymentStatus;
+import dev.mottolab.storeapi.service.utils.UUIDService;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "payment")
+@Getter
+@Setter
 public class PaymentEntity {
     @Id
     private UUID id;
     @Enumerated(EnumType.STRING)
     private PaymentMethod method;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String transactionId;
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus result;
     @Column(nullable = false)
     private Double amount;
+    @Column
+    private String qrCode;
+    @Column
+    private String ref1;
+    @Column
+    private String ref2;
+    @Column
+    private String ref3;
+    @Column(columnDefinition = "TEXT")
+    private String metadata;
     @OneToOne(mappedBy = "payment", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private OrderEntity order;
+
+    @PrePersist
+    protected void onCreate() {
+        this.id = UUIDService.generateUUIDV7();
+    }
 }

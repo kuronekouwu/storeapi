@@ -19,3 +19,12 @@ config:
   jwt:
     secretKey: "SE9XX0XPTKDFVE9FQUXJVKVFOICPXPTKDFVELVU"
     issuer: "mottoshop"
+  payment:
+    scb:
+      apiUrl: "https://api-sandbox.partners.scb"
+      clientId: ""
+      clientSecret: ""
+      merchantId: ""
+    slip:
+      clientId: ""
+      clientSecret: ""
