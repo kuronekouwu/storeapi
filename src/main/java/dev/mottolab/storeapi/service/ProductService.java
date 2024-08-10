@@ -19,7 +19,7 @@ public class ProductService {
         this.repo = repo;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ProductEntity updateProduct(ProductEntity product){
         return this.repo.save(product);
     }
