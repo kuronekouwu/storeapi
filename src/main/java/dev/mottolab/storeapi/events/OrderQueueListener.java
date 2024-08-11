@@ -6,6 +6,7 @@ import dev.mottolab.storeapi.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -20,6 +21,7 @@ public class OrderQueueListener implements ApplicationListener<OrderQueueEvent> 
         this.orderService = orderService;
     }
 
+    @Transactional
     @Override
     public void onApplicationEvent(OrderQueueEvent event) {
         // Get payment ID
