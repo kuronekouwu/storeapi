@@ -31,18 +31,9 @@ public class TruemoneyVoucherProvider {
         // Parse get voucherId
         String voucherId = this.getVoucherId(url);
         if (voucherId != null) {
-            // Create object
-            HashMap hashMap = new HashMap<>();
-            hashMap.put("mobile", this.mobile);
-
-
             // Create request builder
             Request req = new Request.Builder()
                     .url(this.apiUrl + "/campaign/vouchers/" + voucherId + "/verify")
-                    .method("POST", RequestBody.create(
-                            gson.toJson(gson.toJsonTree(hashMap)),
-                            MediaType.parse("application/json")
-                    ))
                     .addHeader("X-Requested-With", "truemoney.maythiwat.com")
                     .build();
 
@@ -75,9 +66,17 @@ public class TruemoneyVoucherProvider {
         // Parse get voucherId
         String voucherId = this.getVoucherId(url);
         if (voucherId != null) {
+            // Create object
+            HashMap hashMap = new HashMap<>();
+            hashMap.put("mobile", this.mobile);
+
             // Create request builder
             Request req = new Request.Builder()
                     .url(this.apiUrl + "/campaign/vouchers/" + voucherId + "/redeem")
+                    .method("POST", RequestBody.create(
+                            gson.toJson(gson.toJsonTree(hashMap)),
+                            MediaType.parse("application/json")
+                    ))
                     .addHeader("X-Requested-With", "truemoney.maythiwat.com")
                     .build();
 
