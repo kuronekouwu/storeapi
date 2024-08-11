@@ -55,7 +55,7 @@ public class PaymentController {
             throw new PaymentMismatch();
         }
 
-        return new PaymentPromtpayResultDTO(PromptpayProvider.generateAnyId(PromptpayProxyType.MSISDN, "0987654321", order.getTotal()));
+        return new PaymentPromtpayResultDTO(this.paymentService.generatePromptpayQrCodeWithMSISDN(order.getTotal()));
     }
 
     @GetMapping("/slip/banking/getInformation")
@@ -95,6 +95,7 @@ public class PaymentController {
         if(order.getStatus() != OrderStatus.PENDING){
             throw new OrderAlreadyProceed();
         }
+
         // Proceed this process
         TmnVoucherResponse tmn = this.paymentService.doProceedViaTruemoneyVoucher(payload.voucherUrl(), order);
 
@@ -140,7 +141,7 @@ public class PaymentController {
             UUID uid = UUID.randomUUID();
             String transactionId = Long.toString(uid.getMostSignificantBits(), 36).toUpperCase();
 
-            PromptpayCreateResult ppResult = this.paymentService.generatePromtpayQRCode(order, transactionId);
+            PromptpayCreateResult ppResult = this.paymentService.generatePromtpayQRCodeBySCB(order, transactionId);
 
             // Get QRCode
             String ppRaw = ppResult.getData().getQrRawData();

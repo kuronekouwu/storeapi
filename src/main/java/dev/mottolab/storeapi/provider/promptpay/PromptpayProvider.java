@@ -8,14 +8,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PromptpayProvider {
-    public static String generateAnyId(PromptpayProxyType type, String target, Double amount){
-        if(type == PromptpayProxyType.MSISDN){
-            target = ("0000000000000" + target.replaceFirst("^0", "66")).substring(target.length() - 13);
-        }
+    private final String mobile;
 
+    public PromptpayProvider(String mobile) {
+        System.out.println(mobile);
+        this.mobile = mobile;
+    }
+
+    public String generateQRCodeWithMSISDN(Double amount){
+        String target = this.mobile;
+        if(target.startsWith("0")){
+            target = "66"+ target.substring(1);
+        }
+        target = String.format("%1$13s", target).replace(' ', '0');
+        if (target.length() > 13) {
+            target = target.substring(target.length() - 13);
+        }
         List<TLV> tag29 = new ArrayList<>();
         tag29.add(new TLV("00", "A000000677010111"));
-        tag29.add(new TLV(type.getValue(), target));
+        tag29.add(new TLV(PromptpayProxyType.MSISDN.getValue(), target));
 
         List<TLV> tag = new ArrayList<>();
         tag.add(new TLV("00", "01"));

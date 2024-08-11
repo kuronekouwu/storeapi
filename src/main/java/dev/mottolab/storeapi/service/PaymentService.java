@@ -5,6 +5,7 @@ import dev.mottolab.storeapi.entity.PaymentEntity;
 import dev.mottolab.storeapi.events.OrderQueueEvent;
 import dev.mottolab.storeapi.exception.PaymentCreateFail;
 import dev.mottolab.storeapi.exception.PaymentProceedFail;
+import dev.mottolab.storeapi.provider.promptpay.PromptpayProvider;
 import dev.mottolab.storeapi.provider.scbopenapi.SCBAPIProvider;
 import dev.mottolab.storeapi.provider.scbopenapi.response.PromptpayCreateResult;
 import dev.mottolab.storeapi.provider.truemoney.voucher.TruemoneyVoucherProvider;
@@ -21,18 +22,22 @@ public class PaymentService {
     private final ApplicationEventPublisher event;
     private final SCBAPIProvider scb;
     private final TruemoneyVoucherProvider tmnVoucher;
+    private final PromptpayProvider pp;
+
     private final PaymentRepository repo;
 
     public PaymentService(
             ApplicationEventPublisher applicationEventPublisher,
             SCBAPIProvider scb,
             PaymentRepository repo,
-            TruemoneyVoucherProvider tmnVoucher
+            TruemoneyVoucherProvider tmnVoucher,
+            PromptpayProvider pp
     ) {
         this.event = applicationEventPublisher;
         this.scb = scb;
         this.repo = repo;
         this.tmnVoucher = tmnVoucher;
+        this.pp = pp;
     }
 
     public void doCompletePayment(PaymentEntity paymentEntity){
@@ -59,7 +64,7 @@ public class PaymentService {
 
     }
 
-    public PromptpayCreateResult generatePromtpayQRCode(OrderEntity order, String transactionId) throws PaymentCreateFail {
+    public PromptpayCreateResult generatePromtpayQRCodeBySCB(OrderEntity order, String transactionId) throws PaymentCreateFail {
         // Create class
         SCBAPIProvider.GeneratePromptpayQrCode pp = new SCBAPIProvider.GeneratePromptpayQrCode();
         pp.setAmount(order.getTotal());
@@ -73,6 +78,10 @@ public class PaymentService {
         }
 
         return ppResult;
+    }
+
+    public String generatePromptpayQrCodeWithMSISDN(Double amount) {
+        return this.pp.generateQRCodeWithMSISDN(amount);
     }
 
     public PaymentEntity updatePayment(PaymentEntity payment){
