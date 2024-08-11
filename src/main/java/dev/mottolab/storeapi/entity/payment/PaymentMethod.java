@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public enum PaymentMethod {
     SLIP_VERIFY,
-    TRUEMONEY_ENVLOP,
+    TRUEMONEY_ENVELOP,
     PROMPTPAY,
     TRUEMONEY_APP;
 

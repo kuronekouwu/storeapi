@@ -3,7 +3,6 @@ package dev.mottolab.storeapi.controller;
 import com.google.gson.Gson;
 import dev.mottolab.storeapi.dto.request.callback.SCBCompletedPaymentDTO;
 import dev.mottolab.storeapi.entity.PaymentEntity;
-import dev.mottolab.storeapi.service.OrderService;
 import dev.mottolab.storeapi.service.PaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

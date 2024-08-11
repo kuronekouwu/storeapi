@@ -4,12 +4,14 @@ import dev.mottolab.storeapi.provider.scbopenapi.response.OAuth2Token;
 import dev.mottolab.storeapi.provider.scbopenapi.response.PromptpayCreateResult;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.UUID;
 
+@Slf4j
 public class SCBAPIProvider {
     private final String apiUrl;
     private final String clientId;
@@ -34,13 +36,11 @@ public class SCBAPIProvider {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.merchantId = merchantId;
-        // Init token
-        this.initToken();
     }
 
     private void initToken(){
         if(!this.generateToken()){
-            System.out.println("[Warning] Can't get access token. Please check API URL or Credential and try again.");
+            log.warn("[Warning] Can't get access token. Please check API URL or Credential and try again.");
         }
     }
 

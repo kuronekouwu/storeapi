@@ -3,6 +3,7 @@ package dev.mottolab.storeapi;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import dev.mottolab.storeapi.dto.exception.*;
 import dev.mottolab.storeapi.exception.*;
+import dev.mottolab.storeapi.provider.truemoney.voucher.excpetion.TmnVoucherError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -91,6 +92,20 @@ public class RestErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ResponseStatusException paymentMismatch(PaymentMismatch ex) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+    }
+
+    @ExceptionHandler(TmnVoucherError.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ResponseStatusException paymentMismatch(TmnVoucherError ex) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+    }
+
+    @ExceptionHandler(PaymentProceedFail.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ResponseStatusException paymentMismatch(PaymentProceedFail ex) {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
     }
 
