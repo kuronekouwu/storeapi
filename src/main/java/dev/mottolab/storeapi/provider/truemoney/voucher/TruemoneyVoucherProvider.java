@@ -13,7 +13,8 @@ import java.util.HashMap;
 
 @Slf4j
 public class TruemoneyVoucherProvider {
-    private final String apiUrl = "http://gift.maythiwat.com";
+    private final String apiUrl = "http://gift.truemoney.com";
+    private final String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0";
     // Config
     private final String mobile;
     private final Float percentage;
@@ -34,7 +35,7 @@ public class TruemoneyVoucherProvider {
             // Create request builder
             Request req = new Request.Builder()
                     .url(this.apiUrl + "/campaign/vouchers/" + voucherId + "/verify")
-                    .addHeader("X-Requested-With", "truemoney.maythiwat.com")
+                    .addHeader("User-Agent", this.userAgent)
                     .build();
 
             try {
@@ -43,7 +44,7 @@ public class TruemoneyVoucherProvider {
                 // Parse body
                 if(response.body() != null){
                     String rawBody = response.body().string();
-                    log.info("Response from Tmn server: {}", rawBody);
+                    log.info("Response from TMN Server: {}", rawBody);
                     TmnVoucherResponse body = this.gson.fromJson(rawBody, TmnVoucherResponse.class);
                     TmnVoucherStatus code = body.getStatus().code;
                     String message = body.getStatus().message;
@@ -77,7 +78,7 @@ public class TruemoneyVoucherProvider {
                             gson.toJson(gson.toJsonTree(hashMap)),
                             MediaType.parse("application/json")
                     ))
-                    .addHeader("X-Requested-With", "truemoney.maythiwat.com")
+                    .addHeader("User-Agent", this.userAgent)
                     .build();
 
             try {
@@ -86,7 +87,7 @@ public class TruemoneyVoucherProvider {
                 // Parse body
                 if(response.body() != null){
                     String rawBody = response.body().string();
-                    log.info("Response from Tmn server: {}", rawBody);
+                    log.info("Response from TMN Server: {}", rawBody);
                     TmnVoucherResponse body = this.gson.fromJson(rawBody, TmnVoucherResponse.class);
                     TmnVoucherStatus code = body.getStatus().code;
                     String message = body.getStatus().message;
