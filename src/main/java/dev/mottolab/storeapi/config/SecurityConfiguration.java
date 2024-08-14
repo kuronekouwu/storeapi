@@ -44,7 +44,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
         return http.authorizeHttpRequests(
                 auth -> auth.requestMatchers("/authen/**", "/products/**", "/category/**").permitAll()
-                        .requestMatchers("/payment/callback/scb/**").permitAll()
+                        .requestMatchers("/payment/callback/scb/completed", "/payment/callback/chillpay/completed").permitAll()
                         .requestMatchers(HttpMethod.POST, "/products/create", "/category/create").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/products/**", "/category/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/products/**", "/category/**").authenticated()
