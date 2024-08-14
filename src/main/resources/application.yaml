@@ -25,6 +25,23 @@ config:
       clientId: ""
       clientSecret: ""
       merchantId: ""
+    chillpay:
+      apiUrl: "https://sandbox-appsrv2.chillpay.co"
+      merchantId: ""
+      apiKey: ""
+      md5: ""
     slip:
+      apiUrl: "https://suba.rdcw.co.th/v1/inquiry"
       clientId: ""
       clientSecret: ""
+      postpaid: "0"
+    tmn_voucher:
+      mobile: ""
+      rate: "2.3"
+    promptpay:
+      type: "MSISDN"
+      value: ""
+    bank:
+      bankCode: ""
+      bankAccount: ""
+      bankAccountName: ""
