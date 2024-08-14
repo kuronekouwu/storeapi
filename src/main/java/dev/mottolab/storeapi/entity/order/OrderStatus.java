@@ -4,9 +4,13 @@ import lombok.Getter;
 
 public enum OrderStatus {
     PENDING,
-    SUCCESS,
-    REFUNDED;
+    PROCESSING,
+    PREPARING,
+    SHIPPING,
+    COMPLETED,
+    REFUNDED,
+    CANCEL;
 
     @Getter
-    private String paymentStatus;
+    private String value;
 }

@@ -32,7 +32,7 @@ public class OrderQueueListener implements ApplicationListener<OrderQueueEvent> 
         if(order.isPresent()) {
             // Update to complete
             OrderEntity orderEntity = order.get();
-            orderEntity.setStatus(OrderStatus.SUCCESS);
+            orderEntity.setStatus(OrderStatus.PREPARING);
             this.orderService.updateOrder(orderEntity);
 
             log.info("Updated order status: {} (Order ID: {})", orderEntity.getStatus(), orderEntity.getId().toString());

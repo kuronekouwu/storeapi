@@ -7,7 +7,6 @@ import dev.mottolab.storeapi.entity.OrderProductEntity;
 import dev.mottolab.storeapi.entity.PaymentEntity;
 import dev.mottolab.storeapi.entity.ProductEntity;
 import dev.mottolab.storeapi.entity.order.OrderStatus;
-import dev.mottolab.storeapi.service.utils.UUIDService;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +33,7 @@ public class OrderResponseDTO {
             PaymentEntity payment
     ) {
         this.orderId = order.getId();
-        this.createdAt = UUIDService.parseTimestampUUIDV7(this.orderId);
+        this.createdAt = order.getCreatedAt().getTime();
         this.items = orderProduct.stream().map(OrderProductResponseDTO::new).toList();
         this.result = order.getStatus();
         if(payment != null){
