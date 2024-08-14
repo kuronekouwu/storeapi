@@ -67,7 +67,7 @@ public class OrderController {
     public OrderResponseDTO checkOrderStatus(
             @AuthenticationPrincipal UserInfoDetail user,
             @PathVariable UUID id
-    ) throws OrderNotExist {
+    ) {
         OrderEntity order = this.orderService.getOrder(user.getUserId(), id)
                 .orElseThrow(OrderNotExist::new);
 
