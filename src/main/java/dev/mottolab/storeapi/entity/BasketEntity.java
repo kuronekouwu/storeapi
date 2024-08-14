@@ -6,7 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "baskets")
@@ -17,10 +17,11 @@ public class BasketEntity {
     @GeneratedValue
     private Integer id;
     @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserInfoEntity user;

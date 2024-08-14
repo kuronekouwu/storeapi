@@ -1,6 +1,8 @@
 package dev.mottolab.storeapi.entity;
 
+import dev.mottolab.storeapi.entity.order.OrderStatus;
 import dev.mottolab.storeapi.entity.payment.PaymentMethod;
+import dev.mottolab.storeapi.entity.payment.PaymentStatus;
 import dev.mottolab.storeapi.service.utils.UUIDService;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,7 +10,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -19,12 +21,17 @@ public class PaymentEntity {
     @Id
     private UUID id;
     @CreationTimestamp
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+    @Column
     @Enumerated(EnumType.STRING)
     private PaymentMethod method;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status = PaymentStatus.PENDING;
     @Column(unique = true, nullable = false)
     private String transactionId;
     @Column(nullable = false)
@@ -37,6 +44,8 @@ public class PaymentEntity {
     private String ref2;
     @Column
     private String ref3;
+    @Column(nullable = true)
+    private String ipAddress;
     @Column(columnDefinition = "TEXT")
     private String metadata;
     @OneToOne(mappedBy = "payment", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
