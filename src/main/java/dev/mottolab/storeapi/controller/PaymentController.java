@@ -33,6 +33,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 @RestController
@@ -42,7 +45,6 @@ public class PaymentController {
     private final PaymentService paymentService;
     // Parser
     private Gson gson;
-
 
     public PaymentController(PaymentService paymentService, OrderService orderService) {
         this.paymentService = paymentService;
@@ -54,7 +56,7 @@ public class PaymentController {
     public PaymentPromtpayResultDTO generateSlipQrCode(
             @AuthenticationPrincipal UserInfoDetail user,
             @Valid @RequestBody GeneratePaymentDTO payload
-    ) throws OrderNotExist, PaymentCreateFail, PaymentMismatch, OrderAlreadyProceed {
+    ) {
         OrderEntity order = this.orderService.getOrder(
                 user.getUserId(),
                 UUID.fromString(payload.orderId())
@@ -82,7 +84,7 @@ public class PaymentController {
             @RequestParam("order_id") UUID orderId,
             @RequestParam("method") SlipMethodDTO method
 
-    ) throws OrderNotExist, PaymentCreateFail, PaymentMismatch, OrderAlreadyProceed, IOException, FileRequireImage, QRCRError, QRCodeNotExist, SlipVerifyError {
+    ) throws IOException, QRCRError, QRCodeNotExist, SlipVerifyError, ParseException {
         OrderEntity order = this.orderService.getOrder(
                 user.getUserId(),
                 orderId
@@ -106,8 +108,12 @@ public class PaymentController {
             throw new PaymentProceedFail("Invalid payment method.");
         }
 
+        // Parse date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+
         // Create entity
         PaymentEntity entity = new PaymentEntity();
+        entity.setPaidAt(sdf.parse(data.getData().getTransDate() + " " + data.getData().getTransTime()));
         entity.setAmount(order.getTotal());
         entity.setTransactionId(data.getDiscriminator());
         entity.setMethod(PaymentMethod.SLIP_VERIFY);
@@ -117,7 +123,7 @@ public class PaymentController {
         // Save payment first
         PaymentEntity payment = this.paymentService.updatePayment(entity);
         // Update order
-        order.setStatus(OrderStatus.SUCCESS);
+        order.setStatus(OrderStatus.SHIPPING);
         this.orderService.updateOrder(order);
         // Push event to update order
         this.paymentService.doCompletePayment(payment);
@@ -130,7 +136,7 @@ public class PaymentController {
     public PaymentCompletedDTO doProceedByTmnVoucher(
             @AuthenticationPrincipal UserInfoDetail user,
             @Valid @RequestBody ProceedTmnVoucherDTO payload
-    ) throws OrderNotExist, PaymentCreateFail, OrderAlreadyProceed, TmnVoucherError, PaymentProceedFail {
+    ) throws TmnVoucherError {
         OrderEntity order = this.orderService.getOrder(
                 user.getUserId(),
                 UUID.fromString(payload.orderId())
@@ -145,6 +151,7 @@ public class PaymentController {
 
         // Create entity
         PaymentEntity entity = new PaymentEntity();
+        entity.setPaidAt(new Date(tmn.getData().getMyTicket().updateDate));
         entity.setAmount(order.getTotal());
         entity.setTransactionId(tmn.getData().getVoucher().voucherId);
         entity.setMethod(PaymentMethod.TRUEMONEY_ENVELOP);
@@ -155,7 +162,7 @@ public class PaymentController {
         // Save payment first
         PaymentEntity payment = this.paymentService.updatePayment(entity);
         // Update order
-        order.setStatus(OrderStatus.SUCCESS);
+        order.setStatus(OrderStatus.SHIPPING);
         this.orderService.updateOrder(order);
         // Push event to update order
         this.paymentService.doCompletePayment(payment);
@@ -167,7 +174,7 @@ public class PaymentController {
     public PaymentPromtpayResultDTO doCreatePaymentByPromptpay(
             @AuthenticationPrincipal UserInfoDetail user,
             @Valid @RequestBody GeneratePaymentDTO payload
-    ) throws OrderNotExist, PaymentCreateFail, PaymentMismatch, OrderAlreadyProceed {
+    ) {
         OrderEntity order = this.orderService.getOrder(
                 user.getUserId(),
                 UUID.fromString(payload.orderId())

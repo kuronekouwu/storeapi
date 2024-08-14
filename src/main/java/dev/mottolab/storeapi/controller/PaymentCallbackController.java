@@ -10,6 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 @RestController
@@ -50,6 +53,7 @@ public class PaymentCallbackController {
             // Update payment
             PaymentEntity paymentEntity = payment.get();
             paymentEntity.setMetadata(gson.toJson(payload));
+            paymentEntity.setPaidAt(new Date());
             // Update order status
             paymentService.updatePayment(paymentEntity);
             // Push event
@@ -58,10 +62,13 @@ public class PaymentCallbackController {
     }
 
     @PostMapping(value = "/chillpay/completed", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public void doCompletedPaymentChillpay(ChillpayCompletedPayment payload) {
+    public void doCompletedPaymentChillpay(ChillpayCompletedPayment payload) throws ParseException {
         if(!paymentService.verifyChecksumByChillpay(payload.toChecksumString(), payload.CheckSum)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid checksum");
         }
+
+        // Parse date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HHmmss");
 
         // Search in database
         Optional<PaymentEntity> payment = this.paymentService.getPaymentByTransactionId(payload.OrderNo);
@@ -69,6 +76,7 @@ public class PaymentCallbackController {
             // Update payment
             PaymentEntity paymentEntity = payment.get();
             paymentEntity.setMetadata(gson.toJson(payload));
+            paymentEntity.setPaidAt(sdf.parse(payload.CurrentDate + " " + payload.CurrentTime));
             // Update order status
             paymentService.updatePayment(paymentEntity);
             // Push event

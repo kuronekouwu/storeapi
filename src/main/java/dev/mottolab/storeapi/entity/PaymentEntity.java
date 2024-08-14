@@ -27,6 +27,8 @@ public class PaymentEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
     @Column
+    private Date paidAt;
+    @Column
     @Enumerated(EnumType.STRING)
     private PaymentMethod method;
     @Column(nullable = false)
