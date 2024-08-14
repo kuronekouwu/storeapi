@@ -3,7 +3,7 @@ package dev.mottolab.storeapi;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import dev.mottolab.storeapi.dto.exception.*;
 import dev.mottolab.storeapi.exception.*;
-import dev.mottolab.storeapi.provider.qrcr.exception.QRCRError;
+import dev.mottolab.storeapi.provider.rdcw.qrcr.exception.QRCRError;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.exception.SlipVerifyError;
 import dev.mottolab.storeapi.provider.truemoney.voucher.excpetion.TmnVoucherError;
 import org.springframework.http.HttpStatus;

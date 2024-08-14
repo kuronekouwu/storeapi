@@ -16,7 +16,7 @@ import dev.mottolab.storeapi.entity.payment.PaymentMethod;
 import dev.mottolab.storeapi.exception.*;
 import dev.mottolab.storeapi.provider.chillpay.exception.ChillpayCreatePaymentFail;
 import dev.mottolab.storeapi.provider.chillpay.response.PaymentCreateURLResult;
-import dev.mottolab.storeapi.provider.qrcr.exception.QRCRError;
+import dev.mottolab.storeapi.provider.rdcw.qrcr.exception.QRCRError;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.exception.SlipVerifyError;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.response.SlipVerifyResponse;
 import dev.mottolab.storeapi.provider.scbopenapi.response.PromptpayCreateResult;

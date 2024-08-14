@@ -1,4 +1,4 @@
-package dev.mottolab.storeapi.provider.qrcr.response;
+package dev.mottolab.storeapi.provider.rdcw.qrcr.response;
 
 public enum QRCRStep {
     MAGIC_DETECTION_V2,

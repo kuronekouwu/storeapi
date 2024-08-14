@@ -11,9 +11,9 @@ import dev.mottolab.storeapi.provider.chillpay.ChillpayProvider;
 import dev.mottolab.storeapi.provider.chillpay.exception.ChillpayCreatePaymentFail;
 import dev.mottolab.storeapi.provider.chillpay.response.PaymentCreateURLResult;
 import dev.mottolab.storeapi.provider.promptpay.PromptpayProvider;
-import dev.mottolab.storeapi.provider.qrcr.QRCRProvider;
-import dev.mottolab.storeapi.provider.qrcr.exception.QRCRError;
-import dev.mottolab.storeapi.provider.qrcr.response.QRCRResult;
+import dev.mottolab.storeapi.provider.rdcw.qrcr.QRCRProvider;
+import dev.mottolab.storeapi.provider.rdcw.qrcr.exception.QRCRError;
+import dev.mottolab.storeapi.provider.rdcw.qrcr.response.QRCRResult;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.SlipverifyProvider;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.exception.SlipVerifyError;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.response.SlipVerifyResponse;
@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class PaymentService {

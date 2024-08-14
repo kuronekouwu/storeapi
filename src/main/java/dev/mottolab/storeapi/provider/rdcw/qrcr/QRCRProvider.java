@@ -1,8 +1,8 @@
-package dev.mottolab.storeapi.provider.qrcr;
+package dev.mottolab.storeapi.provider.rdcw.qrcr;
 
 import com.google.gson.Gson;
-import dev.mottolab.storeapi.provider.qrcr.exception.QRCRError;
-import dev.mottolab.storeapi.provider.qrcr.response.QRCRResult;
+import dev.mottolab.storeapi.provider.rdcw.qrcr.exception.QRCRError;
+import dev.mottolab.storeapi.provider.rdcw.qrcr.response.QRCRResult;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

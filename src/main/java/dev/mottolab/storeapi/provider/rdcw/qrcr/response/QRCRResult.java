@@ -1,4 +1,4 @@
-package dev.mottolab.storeapi.provider.qrcr.response;
+package dev.mottolab.storeapi.provider.rdcw.qrcr.response;
 
 import lombok.Getter;
 import lombok.Setter;

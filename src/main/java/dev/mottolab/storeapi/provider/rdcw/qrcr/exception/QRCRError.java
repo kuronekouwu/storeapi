@@ -1,4 +1,4 @@
-package dev.mottolab.storeapi.provider.qrcr.exception;
+package dev.mottolab.storeapi.provider.rdcw.qrcr.exception;
 
 public class QRCRError extends Throwable {
     private Integer code;
