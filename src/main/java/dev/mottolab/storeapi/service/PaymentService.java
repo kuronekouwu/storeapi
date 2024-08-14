@@ -5,17 +5,32 @@ import dev.mottolab.storeapi.entity.PaymentEntity;
 import dev.mottolab.storeapi.events.OrderQueueEvent;
 import dev.mottolab.storeapi.exception.PaymentCreateFail;
 import dev.mottolab.storeapi.exception.PaymentProceedFail;
+import dev.mottolab.storeapi.exception.QRCodeNotExist;
+import dev.mottolab.storeapi.exception.SlipNotValid;
+import dev.mottolab.storeapi.provider.chillpay.ChillpayProvider;
+import dev.mottolab.storeapi.provider.chillpay.exception.ChillpayCreatePaymentFail;
+import dev.mottolab.storeapi.provider.chillpay.response.PaymentCreateURLResult;
 import dev.mottolab.storeapi.provider.promptpay.PromptpayProvider;
+import dev.mottolab.storeapi.provider.qrcr.QRCRProvider;
+import dev.mottolab.storeapi.provider.qrcr.exception.QRCRError;
+import dev.mottolab.storeapi.provider.qrcr.response.QRCRResult;
+import dev.mottolab.storeapi.provider.rdcw.slipverify.SlipverifyProvider;
+import dev.mottolab.storeapi.provider.rdcw.slipverify.exception.SlipVerifyError;
+import dev.mottolab.storeapi.provider.rdcw.slipverify.response.SlipVerifyResponse;
 import dev.mottolab.storeapi.provider.scbopenapi.SCBAPIProvider;
 import dev.mottolab.storeapi.provider.scbopenapi.response.PromptpayCreateResult;
 import dev.mottolab.storeapi.provider.truemoney.voucher.TruemoneyVoucherProvider;
 import dev.mottolab.storeapi.provider.truemoney.voucher.excpetion.TmnVoucherError;
 import dev.mottolab.storeapi.provider.truemoney.voucher.response.TmnVoucherResponse;
 import dev.mottolab.storeapi.repository.PaymentRepository;
+import dev.mottolab.storeapi.service.utils.ValidatorService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PaymentService {
@@ -23,21 +38,41 @@ public class PaymentService {
     private final SCBAPIProvider scb;
     private final TruemoneyVoucherProvider tmnVoucher;
     private final PromptpayProvider pp;
+    private final QRCRProvider qrcr;
+    private final SlipverifyProvider slip;
+    private final ChillpayProvider chillpay;
 
     private final PaymentRepository repo;
+
+    // Promptpay
+    @Value("${config.payment.promptpay.type}")
+    private String ppMethod;
+    @Value("${config.payment.promptpay.value}")
+    private String ppValue;
+    // Bank account
+    @Value("${config.payment.bank.bankAccount}")
+    private String bankAccount;
+    @Value("${config.payment.bank.bankCode}")
+    private String bankCode;
 
     public PaymentService(
             ApplicationEventPublisher applicationEventPublisher,
             SCBAPIProvider scb,
             PaymentRepository repo,
             TruemoneyVoucherProvider tmnVoucher,
-            PromptpayProvider pp
+            PromptpayProvider pp,
+            QRCRProvider qrcr,
+            SlipverifyProvider slip,
+            ChillpayProvider cp
     ) {
         this.event = applicationEventPublisher;
         this.scb = scb;
         this.repo = repo;
         this.tmnVoucher = tmnVoucher;
         this.pp = pp;
+        this.qrcr = qrcr;
+        this.slip = slip;
+        this.chillpay = cp;
     }
 
     public void doCompletePayment(PaymentEntity paymentEntity){
@@ -64,6 +99,43 @@ public class PaymentService {
 
     }
 
+    public SlipVerifyResponse doProceedViaSlipVerifyByPromptpay(byte[] file, OrderEntity order) throws QRCRError, PaymentProceedFail, QRCodeNotExist, SlipVerifyError {
+        SlipVerifyResponse slip = getSlipInformationByImage(file);
+        SlipVerifyResponse.Data data = slip.getData();
+
+        String recieveProxyType = data.receiver.proxy.type;
+        String recieveAccount = data.receiver.proxy.value;
+        if(
+                (recieveProxyType != null &&  recieveProxyType.equalsIgnoreCase(this.ppMethod))||
+                ValidatorService.checkMatchString(ppValue, recieveAccount) < 3
+        ){
+            throw new PaymentProceedFail("Slip receiver incorrect.");
+        }
+        if(!Objects.equals(data.amount, order.getTotal())){
+            throw new PaymentProceedFail("Amount insufficient for this order");
+        }
+
+        return slip;
+    }
+
+    public SlipVerifyResponse doProceedViaSlipVerifyByBankAccount(byte[] file, OrderEntity order) throws QRCRError, PaymentProceedFail, QRCodeNotExist, SlipVerifyError {
+        SlipVerifyResponse slip = getSlipInformationByImage(file);
+        SlipVerifyResponse.Data data = slip.getData();
+
+        String recieveAccount = data.receiver.account.value;
+        String recieveBank = data.receivingBank;
+        if(
+                (recieveBank != null && !Objects.equals(recieveBank, this.bankAccount)) ||  ValidatorService.checkMatchString(ppValue, recieveAccount) < 3
+        ){
+            throw new PaymentProceedFail("Slip receiver incorrect.");
+        }
+        if(!Objects.equals(data.amount, order.getTotal())){
+            throw new PaymentProceedFail("Amount insufficient for this order");
+        }
+
+        return slip;
+    }
+
     public PromptpayCreateResult generatePromtpayQRCodeBySCB(OrderEntity order, String transactionId) throws PaymentCreateFail {
         // Create class
         SCBAPIProvider.GeneratePromptpayQrCode pp = new SCBAPIProvider.GeneratePromptpayQrCode();
@@ -72,16 +144,28 @@ public class PaymentService {
         pp.setRef2(transactionId);
 
         // Generate payment
-        PromptpayCreateResult ppResult =  this.scb.generatePromptpayQrCode(pp);
-        if(ppResult == null){
-            throw new PaymentCreateFail();
-        }
+        return this.scb.generatePromptpayQrCode(pp);
+    }
 
-        return ppResult;
+    public PaymentCreateURLResult generateTruemoneyPaymentURLByChillPay(OrderEntity order, String transactionId) throws ChillpayCreatePaymentFail {
+        // Create class
+        ChillpayProvider.CreatePaymentURL cp = new ChillpayProvider.CreatePaymentURL();
+        cp.setAmount(order.getTotal());
+        cp.setOrderId(transactionId);
+        cp.setCustomerId(transactionId);
+        cp.setChannelCode(ChillpayProvider.PaymentMethod.TRUEMONEY);
+        cp.setIpAddress("127.0.0.1");
+
+        // Request it
+        return this.chillpay.createPaymentURL(cp);
+    }
+
+    public Boolean verifyChecksumByChillpay(String raw, String checksum){
+        return this.chillpay.verifyChecksum(raw, checksum);
     }
 
     public String generatePromptpayQrCodeWithMSISDN(Double amount) {
-        return this.pp.generateQRCodeWithMSISDN(amount);
+        return this.pp.generateQR29(amount);
     }
 
     public PaymentEntity updatePayment(PaymentEntity payment){
@@ -90,5 +174,23 @@ public class PaymentService {
 
     public Optional<PaymentEntity> getPaymentByTransactionId(String transactionId){
         return this.repo.findByTransactionId(transactionId);
+    }
+
+    private SlipVerifyResponse getSlipInformationByImage(byte[] image) throws QRCRError, SlipVerifyError {
+        // Scan QRCode
+        QRCRResult qr =  this.qrcr.detectQrCode(image);
+        // Get result qr
+        QRCRResult.QRCRData data = qr.getData()[0];
+        if(!Objects.equals(data.getType(), "QRCODE")){
+            throw new QRCodeNotExist();
+        }
+        // Get slip result
+        SlipVerifyResponse slip = this.slip.requestSlipVerify(data.getValue());
+        if(!slip.isValid()){
+            throw new SlipNotValid();
+        }
+
+        // Get data
+        return slip;
     }
 }

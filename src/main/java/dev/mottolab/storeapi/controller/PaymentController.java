@@ -1,18 +1,24 @@
 package dev.mottolab.storeapi.controller;
 
+import com.github.f4b6a3.ulid.Ulid;
+import com.github.f4b6a3.ulid.UlidCreator;
 import com.google.gson.Gson;
 import dev.mottolab.storeapi.dto.request.payment.GeneratePaymentDTO;
-import dev.mottolab.storeapi.dto.request.payment.ProceedSlipVerifyDTO;
 import dev.mottolab.storeapi.dto.request.payment.ProceedTmnVoucherDTO;
+import dev.mottolab.storeapi.dto.request.payment.SlipMethodDTO;
 import dev.mottolab.storeapi.dto.response.payment.PaymentCompletedDTO;
 import dev.mottolab.storeapi.dto.response.payment.PaymentPromtpayResultDTO;
+import dev.mottolab.storeapi.dto.response.payment.PaymentURLResultDTO;
 import dev.mottolab.storeapi.entity.OrderEntity;
 import dev.mottolab.storeapi.entity.PaymentEntity;
 import dev.mottolab.storeapi.entity.order.OrderStatus;
 import dev.mottolab.storeapi.entity.payment.PaymentMethod;
 import dev.mottolab.storeapi.exception.*;
-import dev.mottolab.storeapi.provider.promptpay.PromptpayProvider;
-import dev.mottolab.storeapi.provider.promptpay.PromptpayProxyType;
+import dev.mottolab.storeapi.provider.chillpay.exception.ChillpayCreatePaymentFail;
+import dev.mottolab.storeapi.provider.chillpay.response.PaymentCreateURLResult;
+import dev.mottolab.storeapi.provider.qrcr.exception.QRCRError;
+import dev.mottolab.storeapi.provider.rdcw.slipverify.exception.SlipVerifyError;
+import dev.mottolab.storeapi.provider.rdcw.slipverify.response.SlipVerifyResponse;
 import dev.mottolab.storeapi.provider.scbopenapi.response.PromptpayCreateResult;
 import dev.mottolab.storeapi.provider.truemoney.voucher.excpetion.TmnVoucherError;
 import dev.mottolab.storeapi.provider.truemoney.voucher.response.TmnVoucherResponse;
@@ -23,8 +29,10 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
@@ -32,10 +40,14 @@ import java.util.UUID;
 public class PaymentController {
     private final OrderService orderService;
     private final PaymentService paymentService;
+    // Parser
+    private Gson gson;
+
 
     public PaymentController(PaymentService paymentService, OrderService orderService) {
         this.paymentService = paymentService;
         this.orderService = orderService;
+        this.gson = new Gson();
     }
 
     @PostMapping("/slip/promptpay/createQrCode")
@@ -64,21 +76,53 @@ public class PaymentController {
     }
 
     @PostMapping("/slip/doProceed")
-    public void doProceedByVerifiySlip(
+    public PaymentCompletedDTO doProceedByVerifiySlip(
             @AuthenticationPrincipal UserInfoDetail user,
-            @Valid @RequestBody ProceedSlipVerifyDTO payload
-    ) throws OrderNotExist, PaymentCreateFail, PaymentMismatch, OrderAlreadyProceed {
+            @RequestParam("image") MultipartFile file,
+            @RequestParam("order_id") UUID orderId,
+            @RequestParam("method") SlipMethodDTO method
+
+    ) throws OrderNotExist, PaymentCreateFail, PaymentMismatch, OrderAlreadyProceed, IOException, FileRequireImage, QRCRError, QRCodeNotExist, SlipVerifyError {
         OrderEntity order = this.orderService.getOrder(
                 user.getUserId(),
-                UUID.fromString(payload.orderId())
+                orderId
         ).orElseThrow(OrderNotExist::new);
 
         if(order.getStatus() != OrderStatus.PENDING){
             throw new OrderAlreadyProceed();
         }
 
-        // TODO: Implement this method
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented");
+        // Check if file is image
+        if(!file.getContentType().startsWith("image")){
+            throw new FileRequireImage();
+        }
+
+        SlipVerifyResponse data;
+        if(method == SlipMethodDTO.BANK){
+            data = this.paymentService.doProceedViaSlipVerifyByBankAccount(file.getBytes(), order);
+        }else if(method == SlipMethodDTO.PROMPTPAY){
+            data = this.paymentService.doProceedViaSlipVerifyByPromptpay(file.getBytes(), order);
+        }else{
+            throw new PaymentProceedFail("Invalid payment method.");
+        }
+
+        // Create entity
+        PaymentEntity entity = new PaymentEntity();
+        entity.setAmount(order.getTotal());
+        entity.setTransactionId(data.getDiscriminator());
+        entity.setMethod(PaymentMethod.SLIP_VERIFY);
+        entity.setMetadata(gson.toJson(data));
+        // Set payment information
+        order.setPayment(entity);
+        // Save payment first
+        PaymentEntity payment = this.paymentService.updatePayment(entity);
+        // Update order
+        order.setStatus(OrderStatus.SUCCESS);
+        this.orderService.updateOrder(order);
+        // Push event to update order
+        this.paymentService.doCompletePayment(payment);
+
+        return new PaymentCompletedDTO(payment);
     }
 
     @PostMapping("/truemoney/voucher/doProceed")
@@ -105,7 +149,7 @@ public class PaymentController {
         entity.setTransactionId(tmn.getData().getVoucher().voucherId);
         entity.setMethod(PaymentMethod.TRUEMONEY_ENVELOP);
         entity.setRef1(tmn.getData().getVoucher().link);
-        entity.setMetadata(new Gson().toJson(tmn));
+        entity.setMetadata(gson.toJson(tmn));
         // Set payment information
         order.setPayment(entity);
         // Save payment first
@@ -138,8 +182,8 @@ public class PaymentController {
 
         if(payment == null){
             // Generate transaction ID
-            UUID uid = UUID.randomUUID();
-            String transactionId = Long.toString(uid.getMostSignificantBits(), 36).toUpperCase();
+            Ulid uid = UlidCreator.getUlid();
+            String transactionId = uid.toString().substring(6);
 
             PromptpayCreateResult ppResult = this.paymentService.generatePromtpayQRCodeBySCB(order, transactionId);
 
@@ -171,7 +215,39 @@ public class PaymentController {
     }
 
     @PostMapping("/truemoney/createPayment")
-    public void doCreatePaymentByTmn(){
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented");
+    public PaymentURLResultDTO doCreatePaymentByTmn(
+            @AuthenticationPrincipal UserInfoDetail user,
+            @Valid @RequestBody GeneratePaymentDTO payload
+    ) throws ChillpayCreatePaymentFail {
+        OrderEntity order = this.orderService.getOrder(
+                user.getUserId(),
+                UUID.fromString(payload.orderId())
+        ).orElseThrow(OrderNotExist::new);
+
+        if(order.getStatus() != OrderStatus.PENDING){
+            throw new OrderAlreadyProceed();
+        }
+
+        // Generate transaction ID
+        Ulid uid = UlidCreator.getUlid();
+        String transactionId = uid.toString().substring(6);
+
+        PaymentCreateURLResult payResult = this.paymentService.generateTruemoneyPaymentURLByChillPay(order, transactionId);
+
+        // Create entity
+        PaymentEntity entity = new PaymentEntity();
+        entity.setAmount(order.getTotal());
+        entity.setTransactionId(transactionId);
+        entity.setMethod(PaymentMethod.TRUEMONEY_APP);
+        entity.setRef1(String.valueOf(payResult.TransactionId));
+        entity.setRef2(payResult.Token);
+        // Set payment information
+        order.setPayment(entity);
+        // Save payment first
+        this.paymentService.updatePayment(entity);
+        // Update order
+        this.orderService.updateOrder(order);
+
+        return new PaymentURLResultDTO(payResult.getPaymentUrl());
     }
 }

@@ -3,11 +3,14 @@ package dev.mottolab.storeapi;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import dev.mottolab.storeapi.dto.exception.*;
 import dev.mottolab.storeapi.exception.*;
+import dev.mottolab.storeapi.provider.qrcr.exception.QRCRError;
+import dev.mottolab.storeapi.provider.rdcw.slipverify.exception.SlipVerifyError;
 import dev.mottolab.storeapi.provider.truemoney.voucher.excpetion.TmnVoucherError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -89,24 +93,64 @@ public class RestErrorHandler {
     }
 
     @ExceptionHandler(PaymentMismatch.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ResponseStatusException paymentMismatch(PaymentMismatch ex) {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(TmnVoucherError.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ResponseStatusException paymentMismatch(TmnVoucherError ex) {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
     }
 
     @ExceptionHandler(PaymentProceedFail.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ResponseStatusException paymentMismatch(PaymentProceedFail ex) {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+    }
+
+    @ExceptionHandler(QRCRError.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseStatusException qrcrError(QRCRError ex) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+    }
+
+    @ExceptionHandler(SlipVerifyError.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseStatusException slipVerifyError(SlipVerifyError ex) {
+        if(ex.getCode() != 40000){
+            return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+        }
+
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong. Please try again later");
+    }
+
+
+    @ExceptionHandler(QRCodeNotExist.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ResponseStatusException qrCodeNotexist(QRCodeNotExist ex) {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseStatusException httpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseStatusException methodArgTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed body.");
     }
 
     @ExceptionHandler(JWTDecodeException.class)
