@@ -20,7 +20,7 @@ public class SCBAPIProvider {
     // OAuth2 Config
     private String accessToken;
     private String tokenType;
-    private Integer expiredIn;
+    private Integer expiredIn = 0;
     // HTTP Client
     private OkHttpClient httpClient = new OkHttpClient();
     // Parser
@@ -129,10 +129,8 @@ public class SCBAPIProvider {
             Response response = this.httpClient.newCall(req).execute();
 
             if(response.isSuccessful()) {
-                // Parse body
-                if(response.body() != null){
-                    return gson.fromJson(response.body().string(), PromptpayCreateResult.class);
-                }
+                String bodyString = response.body().string();
+                return gson.fromJson(bodyString, PromptpayCreateResult.class);
             }
         }catch (Exception e){
             e.printStackTrace();
