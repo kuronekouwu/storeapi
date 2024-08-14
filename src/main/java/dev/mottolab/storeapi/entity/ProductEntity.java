@@ -4,7 +4,10 @@ import dev.mottolab.storeapi.service.utils.UUIDService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +18,11 @@ import java.util.UUID;
 public class ProductEntity {
     @Id
     private UUID id;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
     @Column(nullable = false)
     private Boolean isDeleted = false;
     @Column(unique = true, nullable = false, length = 255)

@@ -5,7 +5,10 @@ import dev.mottolab.storeapi.service.utils.UUIDService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -15,6 +18,11 @@ import java.util.UUID;
 public class PaymentEntity {
     @Id
     private UUID id;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
     @Enumerated(EnumType.STRING)
     private PaymentMethod method;
     @Column(unique = true, nullable = false)

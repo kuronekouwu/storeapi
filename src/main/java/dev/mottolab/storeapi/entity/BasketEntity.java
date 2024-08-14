@@ -3,6 +3,10 @@ package dev.mottolab.storeapi.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "baskets")
@@ -12,6 +16,11 @@ public class BasketEntity {
     @Id
     @GeneratedValue
     private Integer id;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private UserInfoEntity user;
