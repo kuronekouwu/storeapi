@@ -1,9 +1,12 @@
 package dev.mottolab.storeapi.dto.response.order;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.mottolab.storeapi.dto.response.payment.PaymentInfoDTO;
 import dev.mottolab.storeapi.entity.OrderEntity;
 import dev.mottolab.storeapi.entity.OrderProductEntity;
+import dev.mottolab.storeapi.entity.PaymentEntity;
 import dev.mottolab.storeapi.entity.ProductEntity;
+import dev.mottolab.storeapi.entity.order.OrderStatus;
 import dev.mottolab.storeapi.service.utils.UUIDService;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,13 +21,25 @@ public class OrderResponseDTO {
     private UUID orderId;
     @JsonProperty("created_at")
     private Long createdAt;
+    @JsonProperty("result")
+    private OrderStatus result;
+    @JsonProperty("payment")
+    private PaymentInfoDTO payment = null;
     @JsonProperty("items")
     private List<OrderProductResponseDTO> items;
 
-    public OrderResponseDTO(OrderEntity order, List<OrderProductEntity> orderProduct) {
+    public OrderResponseDTO(
+            OrderEntity order,
+            List<OrderProductEntity> orderProduct,
+            PaymentEntity payment
+    ) {
         this.orderId = order.getId();
         this.createdAt = UUIDService.parseTimestampUUIDV7(this.orderId);
         this.items = orderProduct.stream().map(OrderProductResponseDTO::new).toList();
+        this.result = order.getStatus();
+        if(payment != null){
+            this.payment = new PaymentInfoDTO(payment);
+        }
     }
 
     @Getter

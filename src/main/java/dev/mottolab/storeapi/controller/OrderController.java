@@ -21,7 +21,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
-
     private final OrderService orderService;
 
     public OrderController(OrderService orderService) {
@@ -42,7 +41,8 @@ public class OrderController {
         OrderEntity order = this.orderService.createOrder(payload, user);
         return new OrderResponseDTO(
                 order,
-                this.orderService.getOrderProductsByOrderId(order.getId())
+                this.orderService.getOrderProductsByOrderId(order.getId()),
+                null
         );
     }
 
@@ -56,14 +56,13 @@ public class OrderController {
         List<OrderResponseDTO> result = new ArrayList<>();
         List<OrderEntity> orderList = this.orderService.getAllOrders(user.getUserId(), page, size);
         for(OrderEntity order : orderList){
-            result.add(new OrderResponseDTO(order, this.orderService.getOrderProductsByOrderId(order.getId())));
+            result.add(new OrderResponseDTO(order, this.orderService.getOrderProductsByOrderId(order.getId()), null));
         }
 
         return result;
     }
 
     @GetMapping("/user/checkOrder/{id}")
-    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public OrderResponseDTO checkOrderStatus(
             @AuthenticationPrincipal UserInfoDetail user,
@@ -74,7 +73,8 @@ public class OrderController {
 
         return new OrderResponseDTO(
                 order,
-                this.orderService.getOrderProductsByOrderId(order.getId())
+                this.orderService.getOrderProductsByOrderId(order.getId()),
+                order.getPayment()
         );
     }
 }
