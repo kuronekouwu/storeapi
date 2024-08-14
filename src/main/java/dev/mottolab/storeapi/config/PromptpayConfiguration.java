@@ -7,12 +7,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class PromptpayConfiguration {
-    @Value("${config.payment.promptpay.mobile}")
-    private String mobile;
-
-
+    @Value("${config.payment.promptpay.type}")
+    private String type;
+    @Value("${config.payment.promptpay.value}")
+    private String value;
+    
     @Bean
     public PromptpayProvider initPromptpayProvider(){
-        return new PromptpayProvider(this.mobile);
+        return new PromptpayProvider(this.type, this.value);
     }
 }
