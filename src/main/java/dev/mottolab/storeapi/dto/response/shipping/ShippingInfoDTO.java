@@ -15,13 +15,13 @@ public class ShippingInfoDTO {
     @JsonProperty("address_line_2")
     private String addressLine2;
     @JsonProperty("sub_district")
-    private String subDistrict = null;
+    private String subDistrict;
     @JsonProperty("district")
-    private String district = null;
+    private String district;
     @JsonProperty("province")
-    private String province = null;
+    private String province;
     @JsonProperty("zip_code")
-    private Integer zipCode = null;
+    private Integer zipCode;
     @JsonProperty("shipping_rate")
     private ShippingRateDTO shippingRateDTO = null;
 
