@@ -131,13 +131,27 @@ public class RestErrorHandler {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong. Please try again later");
     }
 
-
     @ExceptionHandler(QRCodeNotExist.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ResponseStatusException qrCodeNotexist(QRCodeNotExist ex) {
         return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
     }
+
+    @ExceptionHandler(ShippingRateNotExist.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ResponseStatusException shippingRateNotExist(ShippingRateNotExist ex) {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+    }
+
+    @ExceptionHandler(AddressNotExist.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ResponseStatusException addressNotExist(AddressNotExist ex) {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getLocalizedMessage());
+    }
+
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -189,7 +203,7 @@ public class RestErrorHandler {
     public ResponseStatusException httpMessageNotReadableException(HttpMessageNotReadableException ex) {
         return new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
-                ex.getLocalizedMessage()
+                "Invalid body."
         );
     }
 

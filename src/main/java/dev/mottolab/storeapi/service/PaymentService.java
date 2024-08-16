@@ -86,7 +86,7 @@ public class PaymentService {
             if(result.getData().getVoucher().available != 1){
                 throw new PaymentProceedFail("Voucher available must be only one person redeem");
             }
-            if(Double.parseDouble(result.getData().getVoucher().amountBaht) != order.getTotal()){
+            if(Double.parseDouble(result.getData().getVoucher().amountBaht) != order.getPayment().getAmount()){
                 throw new PaymentProceedFail("Amount insufficient for this order");
             }
 
@@ -98,7 +98,7 @@ public class PaymentService {
 
     }
 
-    public SlipVerifyResponse doProceedViaSlipVerifyByPromptpay(byte[] file, OrderEntity order) throws QRCRError, PaymentProceedFail, QRCodeNotExist, SlipVerifyError {
+    public SlipVerifyResponse doProceedViaSlipVerifyByPromptpay(byte[] file, OrderEntity order) throws QRCRError, SlipVerifyError {
         SlipVerifyResponse slip = getSlipInformationByImage(file);
         SlipVerifyResponse.Data data = slip.getData();
 
@@ -110,14 +110,15 @@ public class PaymentService {
         ){
             throw new PaymentProceedFail("Slip receiver incorrect.");
         }
-        if(!Objects.equals(data.amount, order.getTotal())){
+
+        if(data.getAmount() != order.getPayment().getAmount()){
             throw new PaymentProceedFail("Amount insufficient for this order");
         }
 
         return slip;
     }
 
-    public SlipVerifyResponse doProceedViaSlipVerifyByBankAccount(byte[] file, OrderEntity order) throws QRCRError, PaymentProceedFail, QRCodeNotExist, SlipVerifyError {
+    public SlipVerifyResponse doProceedViaSlipVerifyByBankAccount(byte[] file, OrderEntity order) throws QRCRError, SlipVerifyError {
         SlipVerifyResponse slip = getSlipInformationByImage(file);
         SlipVerifyResponse.Data data = slip.getData();
 
@@ -128,30 +129,27 @@ public class PaymentService {
         ){
             throw new PaymentProceedFail("Slip receiver incorrect.");
         }
-        if(!Objects.equals(data.amount, order.getTotal())){
-            throw new PaymentProceedFail("Amount insufficient for this order");
-        }
 
         return slip;
     }
 
-    public PromptpayCreateResult generatePromtpayQRCodeBySCB(OrderEntity order, String transactionId) throws PaymentCreateFail {
+    public PromptpayCreateResult generatePromtpayQRCodeBySCB(PaymentEntity payment)  {
         // Create class
         SCBAPIProvider.GeneratePromptpayQrCode pp = new SCBAPIProvider.GeneratePromptpayQrCode();
-        pp.setAmount(order.getTotal());
-        pp.setRef1(transactionId);
-        pp.setRef2(transactionId);
+        pp.setAmount(payment.getAmount());
+        pp.setRef1(payment.getTransactionId());
+        pp.setRef2(payment.getTransactionId());
 
         // Generate payment
         return this.scb.generatePromptpayQrCode(pp);
     }
 
-    public PaymentCreateURLResult generateTruemoneyPaymentURLByChillPay(OrderEntity order, String transactionId) throws ChillpayCreatePaymentFail {
+    public PaymentCreateURLResult generateTruemoneyPaymentURLByChillPay(PaymentEntity payment) throws ChillpayCreatePaymentFail {
         // Create class
         ChillpayProvider.CreatePaymentURL cp = new ChillpayProvider.CreatePaymentURL();
-        cp.setAmount(order.getTotal());
-        cp.setOrderId(transactionId);
-        cp.setCustomerId(transactionId);
+        cp.setAmount(payment.getAmount());
+        cp.setOrderId(payment.getTransactionId());
+        cp.setCustomerId(payment.getTransactionId());
         cp.setChannelCode(ChillpayProvider.PaymentMethod.TRUEMONEY);
         cp.setIpAddress("127.0.0.1");
 

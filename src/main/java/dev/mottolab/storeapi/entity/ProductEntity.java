@@ -27,13 +27,13 @@ public class ProductEntity {
     private Date updatedAt;
     @Column(nullable = false)
     private Boolean isDeleted = false;
-    @Column(unique = true, nullable = false, length = 255)
+    @Column(unique = true, nullable = false)
     private String slug;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = true)
+    @Column
     private String description;
-    @Column(nullable = true)
+    @Column
     private String image;
     @Column(nullable = false)
     private Double price = 0.0;

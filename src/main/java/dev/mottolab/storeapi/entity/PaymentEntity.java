@@ -34,10 +34,12 @@ public class PaymentEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentStatus status = PaymentStatus.PENDING;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String transactionId;
     @Column(nullable = false)
     private Double amount;
+    @Column(nullable = false, name = "acual_pay")
+    private Double acualPay = 0.0;
     @Column
     private String qrCode;
     @Column

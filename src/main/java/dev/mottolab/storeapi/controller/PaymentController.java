@@ -44,12 +44,11 @@ public class PaymentController {
     private final OrderService orderService;
     private final PaymentService paymentService;
     // Parser
-    private Gson gson;
+    private Gson gson = new Gson();
 
     public PaymentController(PaymentService paymentService, OrderService orderService) {
         this.paymentService = paymentService;
         this.orderService = orderService;
-        this.gson = new Gson();
     }
 
     @PostMapping("/slip/promptpay/createQrCode")
@@ -65,11 +64,16 @@ public class PaymentController {
         if(order.getStatus() != OrderStatus.PENDING){
             throw new OrderAlreadyProceed();
         }
-        if(order.getPayment() != null){
+        if(order.getPayment().getMethod() != PaymentMethod.SLIP_VERIFY_VIA_PROMPTPAY){
             throw new PaymentMismatch();
         }
 
-        return new PaymentPromtpayResultDTO(this.paymentService.generatePromptpayQrCodeWithMSISDN(order.getTotal()));
+        // Caculate total
+        PaymentPromtpayResultDTO response = new PaymentPromtpayResultDTO();
+        response.setAmount(order.getPayment().getAmount());
+        response.setQrCode(this.paymentService.generatePromptpayQrCodeWithMSISDN(response.getAmount()));
+
+        return response;
     }
 
     @GetMapping("/slip/banking/getInformation")
@@ -94,15 +98,25 @@ public class PaymentController {
             throw new OrderAlreadyProceed();
         }
 
+
         // Check if file is image
         if(!file.getContentType().startsWith("image")){
             throw new FileRequireImage();
         }
 
+
         SlipVerifyResponse data;
         if(method == SlipMethodDTO.BANK){
+            if(order.getPayment().getMethod() != PaymentMethod.SLIP_VERIFY_VIA_ACCOUNT){
+                throw new PaymentMismatch();
+            }
+
             data = this.paymentService.doProceedViaSlipVerifyByBankAccount(file.getBytes(), order);
         }else if(method == SlipMethodDTO.PROMPTPAY){
+            if(order.getPayment().getMethod() != PaymentMethod.SLIP_VERIFY_VIA_PROMPTPAY){
+                throw new PaymentMismatch();
+            }
+
             data = this.paymentService.doProceedViaSlipVerifyByPromptpay(file.getBytes(), order);
         }else{
             throw new PaymentProceedFail("Invalid payment method.");
@@ -111,21 +125,14 @@ public class PaymentController {
         // Parse date
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 
-        // Create entity
-        PaymentEntity entity = new PaymentEntity();
-        entity.setPaidAt(sdf.parse(data.getData().getTransDate() + " " + data.getData().getTransTime()));
-        entity.setAmount(order.getTotal());
-        entity.setTransactionId(data.getDiscriminator());
-        entity.setMethod(PaymentMethod.SLIP_VERIFY);
-        entity.setMetadata(gson.toJson(data));
-        // Set payment information
-        order.setPayment(entity);
-        // Save payment first
-        PaymentEntity payment = this.paymentService.updatePayment(entity);
-        // Update order
-        order.setStatus(OrderStatus.SHIPPING);
-        this.orderService.updateOrder(order);
-        // Push event to update order
+        // Update payment
+        PaymentEntity payment = order.getPayment();
+        payment.setPaidAt(sdf.parse(data.getData().getTransDate() + " " + data.getData().getTransTime()));
+        payment.setTransactionId(data.getDiscriminator());
+        payment.setMetadata(gson.toJson(data));
+        // Update payment
+        this.paymentService.updatePayment(payment);
+        // Push event to complete
         this.paymentService.doCompletePayment(payment);
 
         return new PaymentCompletedDTO(payment);
@@ -146,24 +153,20 @@ public class PaymentController {
             throw new OrderAlreadyProceed();
         }
 
+        if(order.getPayment().getMethod() != PaymentMethod.TRUEMONEY_ENVELOP){
+            throw new PaymentMismatch();
+        }
+
         // Proceed this process
         TmnVoucherResponse tmn = this.paymentService.doProceedViaTruemoneyVoucher(payload.voucherUrl(), order);
 
         // Create entity
-        PaymentEntity entity = new PaymentEntity();
-        entity.setPaidAt(new Date(tmn.getData().getMyTicket().updateDate));
-        entity.setAmount(order.getTotal());
-        entity.setTransactionId(tmn.getData().getVoucher().voucherId);
-        entity.setMethod(PaymentMethod.TRUEMONEY_ENVELOP);
-        entity.setRef1(tmn.getData().getVoucher().link);
-        entity.setMetadata(gson.toJson(tmn));
-        // Set payment information
-        order.setPayment(entity);
-        // Save payment first
-        PaymentEntity payment = this.paymentService.updatePayment(entity);
-        // Update order
-        order.setStatus(OrderStatus.SHIPPING);
-        this.orderService.updateOrder(order);
+        PaymentEntity payment = order.getPayment();
+        payment.setPaidAt(new Date(tmn.getData().getMyTicket().updateDate));
+        payment.setTransactionId(tmn.getData().getVoucher().voucherId);
+        payment.setMetadata(gson.toJson(tmn));
+        // Update payment
+        this.paymentService.updatePayment(payment);
         // Push event to update order
         this.paymentService.doCompletePayment(payment);
 
@@ -187,38 +190,39 @@ public class PaymentController {
         // Get payment
         PaymentEntity payment = order.getPayment();
 
-        if(payment == null){
-            // Generate transaction ID
-            Ulid uid = UlidCreator.getUlid();
-            String transactionId = uid.toString().substring(6);
-
-            PromptpayCreateResult ppResult = this.paymentService.generatePromtpayQRCodeBySCB(order, transactionId);
-
-            // Get QRCode
-            String ppRaw = ppResult.getData().getQrRawData();
-
-            // Create entity
-            PaymentEntity entity = new PaymentEntity();
-            entity.setAmount(order.getTotal());
-            entity.setTransactionId(transactionId);
-            entity.setMethod(PaymentMethod.PROMPTPAY);
-            entity.setQrCode(ppRaw);
-            // Set payment information
-            order.setPayment(entity);
-            // Save payment first
-            this.paymentService.updatePayment(entity);
-            // Update order
-            this.orderService.updateOrder(order);
-
-            return new PaymentPromtpayResultDTO(ppRaw);
-        }
-
-        // If exist. Check if payment method is promptpay
+        // If existed. Check if payment method is promptpay
         if(payment.getMethod() != PaymentMethod.PROMPTPAY){
             throw new PaymentMismatch();
         }
 
-        return new PaymentPromtpayResultDTO(payment.getQrCode());
+        // Create response
+        PaymentPromtpayResultDTO response = new PaymentPromtpayResultDTO();
+        response.setAmount(payment.getAmount());
+
+        if(payment.getQrCode() == null){
+            // Generate transaction ID
+            Ulid uid = UlidCreator.getUlid();
+            String transactionId = uid.toString().substring(6);
+            // Set transaction id
+            payment.setTransactionId(transactionId);
+
+            PromptpayCreateResult ppResult = this.paymentService.generatePromtpayQRCodeBySCB(payment);
+
+            // Get QRCode
+            String ppRaw = ppResult.getData().getQrRawData();
+
+            // Update QRCode
+            payment.setQrCode(ppRaw);
+            // Update payment
+            this.paymentService.updatePayment(payment);
+
+            response.setQrCode(ppRaw);
+            return response;
+        }else{
+            response.setQrCode(payment.getQrCode());
+        }
+
+        return response;
     }
 
     @PostMapping("/truemoney/createPayment")
@@ -235,25 +239,27 @@ public class PaymentController {
             throw new OrderAlreadyProceed();
         }
 
+        // Get payment
+        PaymentEntity payment = order.getPayment();
+
+        // If existed. Check if payment method is promptpay
+        if(payment.getMethod() != PaymentMethod.TRUEMONEY_APP){
+            throw new PaymentMismatch();
+        }
+
         // Generate transaction ID
         Ulid uid = UlidCreator.getUlid();
         String transactionId = uid.toString().substring(6);
+        // Set transaction id
+        payment.setTransactionId(transactionId);
 
-        PaymentCreateURLResult payResult = this.paymentService.generateTruemoneyPaymentURLByChillPay(order, transactionId);
+        PaymentCreateURLResult payResult = this.paymentService.generateTruemoneyPaymentURLByChillPay(payment);
 
         // Create entity
-        PaymentEntity entity = new PaymentEntity();
-        entity.setAmount(order.getTotal());
-        entity.setTransactionId(transactionId);
-        entity.setMethod(PaymentMethod.TRUEMONEY_APP);
-        entity.setRef1(String.valueOf(payResult.TransactionId));
-        entity.setRef2(payResult.Token);
-        // Set payment information
-        order.setPayment(entity);
-        // Save payment first
-        this.paymentService.updatePayment(entity);
-        // Update order
-        this.orderService.updateOrder(order);
+        payment.setRef1(String.valueOf(payResult.TransactionId));
+        payment.setRef2(payResult.Token);
+        // Update payment first
+        this.paymentService.updatePayment(payment);
 
         return new PaymentURLResultDTO(payResult.getPaymentUrl());
     }

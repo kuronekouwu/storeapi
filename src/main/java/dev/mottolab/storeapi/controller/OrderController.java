@@ -23,7 +23,9 @@ import java.util.UUID;
 public class OrderController {
     private final OrderService orderService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(
+            OrderService orderService
+    ) {
         this.orderService = orderService;
     }
 
@@ -42,7 +44,7 @@ public class OrderController {
         return new OrderResponseDTO(
                 order,
                 this.orderService.getOrderProductsByOrderId(order.getId()),
-                null
+                order.getPayment()
         );
     }
 

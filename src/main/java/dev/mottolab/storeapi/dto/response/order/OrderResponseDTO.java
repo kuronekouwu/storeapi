@@ -2,10 +2,8 @@ package dev.mottolab.storeapi.dto.response.order;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.mottolab.storeapi.dto.response.payment.PaymentInfoDTO;
-import dev.mottolab.storeapi.entity.OrderEntity;
-import dev.mottolab.storeapi.entity.OrderProductEntity;
-import dev.mottolab.storeapi.entity.PaymentEntity;
-import dev.mottolab.storeapi.entity.ProductEntity;
+import dev.mottolab.storeapi.dto.response.shipping.ShippingInfoDTO;
+import dev.mottolab.storeapi.entity.*;
 import dev.mottolab.storeapi.entity.order.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,12 +18,18 @@ public class OrderResponseDTO {
     private UUID orderId;
     @JsonProperty("created_at")
     private Long createdAt;
-    @JsonProperty("result")
+    @JsonProperty("total")
+    private Double total;
+    @JsonProperty("discount")
+    private Double discount = 0.0;
+    @JsonProperty("status")
     private OrderStatus result;
     @JsonProperty("payment")
     private PaymentInfoDTO payment = null;
     @JsonProperty("items")
     private List<OrderProductResponseDTO> items;
+    @JsonProperty("shipping")
+    private ShippingInfoDTO shipping = null;
 
     public OrderResponseDTO(
             OrderEntity order,
@@ -36,8 +40,12 @@ public class OrderResponseDTO {
         this.createdAt = order.getCreatedAt().getTime();
         this.items = orderProduct.stream().map(OrderProductResponseDTO::new).toList();
         this.result = order.getStatus();
+        this.total = order.getTotal();
         if(payment != null){
             this.payment = new PaymentInfoDTO(payment);
+        }
+        if(order.getShipping() != null){
+            this.shipping = new ShippingInfoDTO(order.getShipping());
         }
     }
 
@@ -67,4 +75,6 @@ public class OrderResponseDTO {
             }
         }
     }
+
+
 }

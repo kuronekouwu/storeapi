@@ -30,6 +30,7 @@ public class OrderEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.PENDING;
+    @Column(nullable = false)
     @OneToMany(mappedBy = "order")
     private List<OrderProductEntity> orderProducts;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,6 +39,10 @@ public class OrderEntity {
     @OneToOne
     @JoinColumn(name = "payment_id", referencedColumnName = "id")
     private PaymentEntity payment;
+    @OneToOne
+    @JoinColumn(name = "shipping_id", referencedColumnName = "id")
+    private ShippingEntity shipping;
+
     @PrePersist
     protected void onCreate() {
         this.id = UUIDService.generateUUIDV7();

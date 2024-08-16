@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dev.mottolab.storeapi.dto.request.callback.ChillpayCompletedPayment;
 import dev.mottolab.storeapi.dto.request.callback.SCBCompletedPaymentDTO;
 import dev.mottolab.storeapi.entity.PaymentEntity;
+import dev.mottolab.storeapi.entity.payment.PaymentStatus;
 import dev.mottolab.storeapi.service.PaymentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,22 +21,6 @@ import java.util.Optional;
 public class PaymentCallbackController {
     private final PaymentService paymentService;
     private final Gson gson = new Gson();
-    private String[] checksumPaymentCompletedField = {
-            "TransactionId",
-            "Amount",
-            "OrderNo",
-            "CustomerId",
-            "BankCode",
-            "PaymentDate",
-            "PaymentStatus",
-            "BankRefCode",
-            "CurrentDate",
-            "CurrentTime",
-            "PaymentDescription",
-            "CreditCardToken",
-            "Currency",
-            "CustomerName"
-    };
 
     public PaymentCallbackController(
             PaymentService paymentService
@@ -53,6 +38,7 @@ public class PaymentCallbackController {
             // Update payment
             PaymentEntity paymentEntity = payment.get();
             paymentEntity.setMetadata(gson.toJson(payload));
+            paymentEntity.setStatus(PaymentStatus.SUCCESS);
             paymentEntity.setPaidAt(new Date());
             // Update order status
             paymentService.updatePayment(paymentEntity);
@@ -77,6 +63,7 @@ public class PaymentCallbackController {
             PaymentEntity paymentEntity = payment.get();
             paymentEntity.setMetadata(gson.toJson(payload));
             paymentEntity.setPaidAt(sdf.parse(payload.CurrentDate + " " + payload.CurrentTime));
+            paymentEntity.setStatus(PaymentStatus.SUCCESS);
             // Update order status
             paymentService.updatePayment(paymentEntity);
             // Push event

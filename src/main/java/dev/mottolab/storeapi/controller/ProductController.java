@@ -9,7 +9,6 @@ import dev.mottolab.storeapi.exception.ProductNotExist;
 import dev.mottolab.storeapi.repository.CategoryRepository;
 import dev.mottolab.storeapi.service.CategoryService;
 import dev.mottolab.storeapi.service.ProductService;
-import dev.mottolab.storeapi.service.utils.UUIDService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

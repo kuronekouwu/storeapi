@@ -3,6 +3,8 @@ package dev.mottolab.storeapi.service;
 import dev.mottolab.storeapi.dto.request.order.CreateOrderByBasketIdDTO;
 import dev.mottolab.storeapi.entity.*;
 import dev.mottolab.storeapi.entity.order.OrderStatus;
+import dev.mottolab.storeapi.exception.AddressNotExist;
+import dev.mottolab.storeapi.exception.ShippingRateNotExist;
 import dev.mottolab.storeapi.repository.OrderProductRepository;
 import dev.mottolab.storeapi.repository.OrderRepository;
 import dev.mottolab.storeapi.user.UserInfoDetail;
@@ -12,39 +14,69 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class OrderService {
     private final BasketService basketService;
     private final ProductService productService;
+    private final ShippingService shippingService;
+    private final UserAddressService userAddressService;
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
+    private final PaymentService paymentService;
 
     public OrderService(
             BasketService basketService,
             OrderRepository orderRepository,
             OrderProductRepository orderProductRepository,
-            ProductService productService
+            ProductService productService,
+            UserAddressService userAddressService,
+            ShippingService shippingService,
+            PaymentService paymentService
     ) {
         this.basketService = basketService;
         this.orderRepository = orderRepository;
         this.orderProductRepository = orderProductRepository;
         this.productService = productService;
+        this.userAddressService = userAddressService;
+        this.shippingService = shippingService;
+        this.paymentService = paymentService;
     }
 
     @Transactional()
     public OrderEntity createOrder(CreateOrderByBasketIdDTO payload, UserInfoDetail user) {
+        // Get address
+        UserAddressEntity userAddress = this.userAddressService.getAddressByUserId(user.getUserId(), payload.getAddressId())
+                .orElseThrow(AddressNotExist::new);
+
+        // Get shipping rate
+        ShippingRateEntity shippingRate = this.shippingService.getShippingRateById(payload.getShippingId())
+                .orElseThrow(ShippingRateNotExist::new);
+
         // Create order
         OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setCreatedAt(new Date());
         // Init new user
         UserInfoEntity userEntity = new UserInfoEntity();
         userEntity.setId(user.getUserId());
         orderEntity.setUser(userEntity);
         orderEntity.setStatus(OrderStatus.PENDING);
+        // Create order shipping
+        ShippingEntity shipping = new ShippingEntity();
+        shipping.setFullName(userAddress.getFullName());
+        shipping.setPhoneNumber(userAddress.getPhoneNumber());
+        shipping.setLine1(userAddress.getLine1());
+        shipping.setLine2(userAddress.getLine2());
+        shipping.setAddress(userAddress.getAddress());
+        shipping.setShippingRate(shippingRate);
+        // Append shipping into order
+        orderEntity.setShipping(shipping);
+        // Create payment
+        PaymentEntity paymentEntity = new PaymentEntity();
+        paymentEntity.setMethod(payload.getPaymentMethod());
+        // Append payment into order
+        orderEntity.setPayment(paymentEntity);
         // Create array list
         List<OrderProductEntity> orderProducts = new ArrayList<>();
         List<ProductEntity> products = new ArrayList<>();
@@ -75,9 +107,16 @@ public class OrderService {
             }
         }
 
+        // Update payment total
+        paymentEntity.setAmount(orderEntity.getTotal() + shippingRate.getPrice());
+
         if(!orderProducts.isEmpty()){
-            // Save order first
+            // Save payment first
+            this.paymentService.updatePayment(paymentEntity);
+            // Then save order
             this.updateOrder(orderEntity);
+            // Save shipping address
+            this.shippingService.updateShipping(shipping);
             // Save order product
             this.orderProductRepository.saveAll(orderProducts);
             // Update product
@@ -91,7 +130,7 @@ public class OrderService {
                             .toList()
             );
 
-            return this.orderRepository.findById(orderEntity.getId()).get();
+            return orderEntity;
         }
 
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No product item found.");

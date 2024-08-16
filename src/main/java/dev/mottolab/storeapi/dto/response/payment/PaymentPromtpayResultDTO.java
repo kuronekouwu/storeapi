@@ -7,10 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PaymentPromtpayResultDTO {
+    @JsonProperty("amount")
+    private Double amount;
     @JsonProperty("qrcode")
     private String qrCode;
-
-    public PaymentPromtpayResultDTO(String qrCode) {
-        this.qrCode = qrCode;
-    }
 }

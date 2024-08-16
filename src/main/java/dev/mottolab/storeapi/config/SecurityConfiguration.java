@@ -2,7 +2,6 @@ package dev.mottolab.storeapi.config;
 
 import dev.mottolab.storeapi.filter.JwtAuthenFilter;
 import dev.mottolab.storeapi.repository.IdentifyRepository;
-import dev.mottolab.storeapi.repository.UserInfoRepository;
 import dev.mottolab.storeapi.service.UserInfoService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,10 +33,9 @@ public class SecurityConfiguration {
     @Bean
     public UserDetailsService userDetailsService(
             IdentifyRepository identifyRepository,
-            UserInfoRepository userInfoRepository,
             PasswordEncoder passwordEncoder
     ) {
-        return new UserInfoService(identifyRepository, userInfoRepository, passwordEncoder);
+        return new UserInfoService(identifyRepository, passwordEncoder);
     }
 
     @Bean
@@ -48,7 +46,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/products/create", "/category/create").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/products/**", "/category/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/products/**", "/category/**").authenticated()
-                        .requestMatchers("/user/**", "/baskets/**", "/orders/**", "/payment/**").authenticated()
+                        .requestMatchers("/user/**", "/baskets/**", "/orders/**", "/payment/**", "/address/**", "/shipping/**").authenticated()
                 )
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
