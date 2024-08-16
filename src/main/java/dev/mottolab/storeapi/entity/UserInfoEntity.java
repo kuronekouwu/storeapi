@@ -20,10 +20,14 @@ public class UserInfoEntity {
     private String displayName;
     @Enumerated(EnumType.STRING)
     private UserRole roles;
+    @Column(name = "default_address_id")
+    private Integer defaultAddressId;
     @OneToOne(mappedBy = "user")
     private IdentifyEntity identity;
     @OneToMany(mappedBy = "user")
     private List<BasketEntity> baskets = new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<OrderEntity> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<UserAddressEntity> address = new ArrayList<>();
 }
