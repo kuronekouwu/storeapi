@@ -2,7 +2,6 @@ package dev.mottolab.storeapi.dto.response.shipping;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.mottolab.storeapi.entity.ShippingEntity;
-import dev.mottolab.storeapi.entity.shipping.ShippingType;
 import lombok.Getter;
 import lombok.Setter;
 
