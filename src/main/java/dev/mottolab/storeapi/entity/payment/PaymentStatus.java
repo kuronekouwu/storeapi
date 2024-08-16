@@ -7,6 +7,7 @@ public enum PaymentStatus {
     PROCESSING,
     SUCCESS,
     FAILED,
+    EXPIRED, // หากเวลาชำระเงินหมดอายุ
     REFUNDING,
     REFUNDED;
 
