@@ -8,8 +8,8 @@ public enum OrderStatus {
     PREPARING,
     SHIPPING,
     COMPLETED,
-    REFUNDED,
-    CANCEL;
+    REFUNDED, // คืนเงิน ในกรณีสินค้าเสียหายหรือคืนของ
+    CANCEL; // เกิดเคสยกเลิกสินค้า หรีอหมดเวลาชำระเงิน
 
     @Getter
     private String value;
