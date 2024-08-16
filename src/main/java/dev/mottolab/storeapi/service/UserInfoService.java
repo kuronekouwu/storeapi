@@ -5,7 +5,6 @@ import dev.mottolab.storeapi.entity.IdentifyEntity;
 import dev.mottolab.storeapi.entity.UserInfoEntity;
 import dev.mottolab.storeapi.exception.AccountAlreadyExist;
 import dev.mottolab.storeapi.repository.IdentifyRepository;
-import dev.mottolab.storeapi.repository.UserInfoRepository;
 import dev.mottolab.storeapi.service.utils.UUIDService;
 import dev.mottolab.storeapi.user.UserInfoDetail;
 import dev.mottolab.storeapi.user.UserRole;
@@ -20,16 +19,13 @@ import java.util.Optional;
 @Service
 public class UserInfoService implements UserDetailsService {
     private IdentifyRepository idenRepo;
-    private UserInfoRepository userInfoRepo;
     private PasswordEncoder passwordEncoder;
 
     public UserInfoService(
         IdentifyRepository idenRepo,
-        UserInfoRepository userRepo,
         PasswordEncoder passwordEncoder
     ){
         this.idenRepo = idenRepo;
-        this.userInfoRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -39,7 +35,7 @@ public class UserInfoService implements UserDetailsService {
         return identify.map(UserInfoDetail::new).orElseThrow(() -> new UsernameNotFoundException("User not exist"));
     }
 
-    public IdentifyEntity registerUser(RegisterDTO register) throws AccountAlreadyExist {
+    public void registerUser(RegisterDTO register) throws AccountAlreadyExist {
         // Check account has been already used
         Optional<IdentifyEntity> idenExist = idenRepo.findByEmail(register.account());
         if(idenExist.isPresent()){
@@ -57,6 +53,6 @@ public class UserInfoService implements UserDetailsService {
         userInfo.setRoles(UserRole.USER);
         // Set into identify
         identify.setUser(userInfo);
-        return idenRepo.save(identify);
+        idenRepo.save(identify);
     }
 }
