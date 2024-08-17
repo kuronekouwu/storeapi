@@ -1,6 +1,5 @@
 package dev.mottolab.storeapi.entity.payment;
 
-import lombok.Getter;
 
 public enum PaymentStatus {
     PENDING,
@@ -10,7 +9,4 @@ public enum PaymentStatus {
     EXPIRED, // หากเวลาชำระเงินหมดอายุ
     REFUNDING,
     REFUNDED;
-
-    @Getter
-    private String paymentStatus;
 }
