@@ -1,9 +1,9 @@
 package dev.mottolab.storeapi.service;
 
+import com.google.zxing.NotFoundException;
 import dev.mottolab.storeapi.entity.OrderEntity;
 import dev.mottolab.storeapi.entity.PaymentEntity;
 import dev.mottolab.storeapi.events.OrderQueueEvent;
-import dev.mottolab.storeapi.exception.PaymentCreateFail;
 import dev.mottolab.storeapi.exception.PaymentProceedFail;
 import dev.mottolab.storeapi.exception.QRCodeNotExist;
 import dev.mottolab.storeapi.exception.SlipNotValid;
@@ -11,9 +11,7 @@ import dev.mottolab.storeapi.provider.chillpay.ChillpayProvider;
 import dev.mottolab.storeapi.provider.chillpay.exception.ChillpayCreatePaymentFail;
 import dev.mottolab.storeapi.provider.chillpay.response.PaymentCreateURLResult;
 import dev.mottolab.storeapi.provider.promptpay.PromptpayProvider;
-import dev.mottolab.storeapi.provider.rdcw.qrcr.QRCRProvider;
-import dev.mottolab.storeapi.provider.rdcw.qrcr.exception.QRCRError;
-import dev.mottolab.storeapi.provider.rdcw.qrcr.response.QRCRResult;
+import dev.mottolab.storeapi.provider.qrcode.QRCodeProvider;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.SlipverifyProvider;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.exception.SlipVerifyError;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.response.SlipVerifyResponse;
@@ -28,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -37,7 +36,7 @@ public class PaymentService {
     private final SCBAPIProvider scb;
     private final TruemoneyVoucherProvider tmnVoucher;
     private final PromptpayProvider pp;
-    private final QRCRProvider qrcr;
+    private final QRCodeProvider qrcode;
     private final SlipverifyProvider slip;
     private final ChillpayProvider chillpay;
 
@@ -60,7 +59,7 @@ public class PaymentService {
             PaymentRepository repo,
             TruemoneyVoucherProvider tmnVoucher,
             PromptpayProvider pp,
-            QRCRProvider qrcr,
+            QRCodeProvider qrcode,
             SlipverifyProvider slip,
             ChillpayProvider cp
     ) {
@@ -69,7 +68,7 @@ public class PaymentService {
         this.repo = repo;
         this.tmnVoucher = tmnVoucher;
         this.pp = pp;
-        this.qrcr = qrcr;
+        this.qrcode = qrcode;
         this.slip = slip;
         this.chillpay = cp;
     }
@@ -98,7 +97,7 @@ public class PaymentService {
 
     }
 
-    public SlipVerifyResponse doProceedViaSlipVerifyByPromptpay(byte[] file, OrderEntity order) throws QRCRError, SlipVerifyError {
+    public SlipVerifyResponse doProceedViaSlipVerifyByPromptpay(byte[] file, OrderEntity order) throws IOException, NotFoundException, SlipVerifyError {
         SlipVerifyResponse slip = getSlipInformationByImage(file);
         SlipVerifyResponse.Data data = slip.getData();
 
@@ -118,7 +117,7 @@ public class PaymentService {
         return slip;
     }
 
-    public SlipVerifyResponse doProceedViaSlipVerifyByBankAccount(byte[] file, OrderEntity order) throws QRCRError, SlipVerifyError {
+    public SlipVerifyResponse doProceedViaSlipVerifyByBankAccount(byte[] file) throws IOException, NotFoundException, SlipVerifyError {
         SlipVerifyResponse slip = getSlipInformationByImage(file);
         SlipVerifyResponse.Data data = slip.getData();
 
@@ -173,16 +172,12 @@ public class PaymentService {
         return this.repo.findByTransactionId(transactionId);
     }
 
-    private SlipVerifyResponse getSlipInformationByImage(byte[] image) throws QRCRError, SlipVerifyError {
+    private SlipVerifyResponse getSlipInformationByImage(byte[] image) throws IOException, NotFoundException, SlipVerifyError {
         // Scan QRCode
-        QRCRResult qr =  this.qrcr.detectQrCode(image);
-        // Get result qr
-        QRCRResult.QRCRData data = qr.getData()[0];
-        if(!Objects.equals(data.getType(), "QRCODE")){
-            throw new QRCodeNotExist();
-        }
+        String value =  this.qrcode.decodeQr(image);
+        if(value.isEmpty()) throw new QRCodeNotExist();
         // Get slip result
-        SlipVerifyResponse slip = this.slip.requestSlipVerify(data.getValue());
+        SlipVerifyResponse slip = this.slip.requestSlipVerify(value);
         if(!slip.isValid()){
             throw new SlipNotValid();
         }
