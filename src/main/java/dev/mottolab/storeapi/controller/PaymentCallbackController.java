@@ -49,7 +49,7 @@ public class PaymentCallbackController {
 
     @PostMapping(value = "/chillpay/completed", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public void doCompletedPaymentChillpay(ChillpayCompletedPayment payload) throws ParseException {
-        if(!paymentService.verifyChecksumByChillpay(payload.toChecksumString(), payload.CheckSum)){
+        if(!paymentService.verifyChecksumByChillpay(payload.toChecksumString(), payload.CheckSum())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid checksum");
         }
 
@@ -57,12 +57,12 @@ public class PaymentCallbackController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HHmmss");
 
         // Search in database
-        Optional<PaymentEntity> payment = this.paymentService.getPaymentByTransactionId(payload.OrderNo);
+        Optional<PaymentEntity> payment = this.paymentService.getPaymentByTransactionId(payload.OrderNo());
         if(payment.isPresent()) {
             // Update payment
             PaymentEntity paymentEntity = payment.get();
             paymentEntity.setMetadata(gson.toJson(payload));
-            paymentEntity.setPaidAt(sdf.parse(payload.CurrentDate + " " + payload.CurrentTime));
+            paymentEntity.setPaidAt(sdf.parse(payload.CurrentDate() + " " + payload.CurrentTime()));
             paymentEntity.setStatus(PaymentStatus.SUCCESS);
             // Update order status
             paymentService.updatePayment(paymentEntity);

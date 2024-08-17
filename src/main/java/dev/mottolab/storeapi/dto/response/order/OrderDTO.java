@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class OrderResponseDTO {
+public class OrderDTO {
     @JsonProperty("order_id")
     private UUID orderId;
     @JsonProperty("created_at")
@@ -31,10 +31,11 @@ public class OrderResponseDTO {
     @JsonProperty("shipping")
     private ShippingInfoDTO shipping = null;
 
-    public OrderResponseDTO(
+    public OrderDTO(
             OrderEntity order,
+            PaymentEntity payment,
             List<OrderProductEntity> orderProduct,
-            PaymentEntity payment
+            List<ShippingTrackerEntity> shippingTracker
     ) {
         this.orderId = order.getId();
         this.createdAt = order.getCreatedAt().getTime();
@@ -45,7 +46,7 @@ public class OrderResponseDTO {
             this.payment = new PaymentInfoDTO(payment);
         }
         if(order.getShipping() != null){
-            this.shipping = new ShippingInfoDTO(order.getShipping());
+            this.shipping = new ShippingInfoDTO(order.getShipping(), shippingTracker);
         }
     }
 

@@ -1,10 +1,11 @@
 package dev.mottolab.storeapi.controller;
 
 import dev.mottolab.storeapi.dto.request.order.CreateOrderByBasketIdDTO;
-import dev.mottolab.storeapi.dto.response.order.OrderResponseDTO;
+import dev.mottolab.storeapi.dto.response.order.OrderDTO;
 import dev.mottolab.storeapi.entity.OrderEntity;
 import dev.mottolab.storeapi.exception.OrderNotExist;
 import dev.mottolab.storeapi.service.OrderService;
+import dev.mottolab.storeapi.service.TrackingService;
 import dev.mottolab.storeapi.user.UserInfoDetail;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -22,17 +23,20 @@ import java.util.UUID;
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService orderService;
+    private final TrackingService trackingService;
 
     public OrderController(
-            OrderService orderService
+            OrderService orderService,
+            TrackingService trackingService
     ) {
         this.orderService = orderService;
+        this.trackingService = trackingService;
     }
 
     @PostMapping("/user/basket/createOrder")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public OrderResponseDTO creteOrderByBasketIds(
+    public OrderDTO creteOrderByBasketIds(
             @AuthenticationPrincipal UserInfoDetail user,
             @Valid @RequestBody CreateOrderByBasketIdDTO payload
     ){
@@ -41,24 +45,29 @@ public class OrderController {
         }
 
         OrderEntity order = this.orderService.createOrder(payload, user);
-        return new OrderResponseDTO(
+        return new OrderDTO(
                 order,
+                order.getPayment(),
                 this.orderService.getOrderProductsByOrderId(order.getId()),
-                order.getPayment()
+                null
         );
     }
 
     @GetMapping("/user/getList")
     @ResponseBody
-    public List<OrderResponseDTO> checkOrderStatus(
+    public List<OrderDTO> checkOrderStatus(
             @AuthenticationPrincipal UserInfoDetail user,
             @RequestParam @Min(0) Integer page,
             @RequestParam @Min(1) @Max(20) Integer size
     ){
-        List<OrderResponseDTO> result = new ArrayList<>();
+        List<OrderDTO> result = new ArrayList<>();
         List<OrderEntity> orderList = this.orderService.getAllOrders(user.getUserId(), page, size);
         for(OrderEntity order : orderList){
-            result.add(new OrderResponseDTO(order, this.orderService.getOrderProductsByOrderId(order.getId()), null));
+            result.add(new OrderDTO(
+                    order,
+                    null,
+                    this.orderService.getOrderProductsByOrderId(order.getId()),
+                    null));
         }
 
         return result;
@@ -66,17 +75,18 @@ public class OrderController {
 
     @GetMapping("/user/checkOrder/{id}")
     @ResponseBody
-    public OrderResponseDTO checkOrderStatus(
+    public OrderDTO checkOrderStatus(
             @AuthenticationPrincipal UserInfoDetail user,
             @PathVariable UUID id
     ) {
         OrderEntity order = this.orderService.getOrder(user.getUserId(), id)
                 .orElseThrow(OrderNotExist::new);
 
-        return new OrderResponseDTO(
+        return new OrderDTO(
                 order,
+                order.getPayment(),
                 this.orderService.getOrderProductsByOrderId(order.getId()),
-                order.getPayment()
+                this.trackingService.getAllTrackingByShippingId(order.getShipping().getId())
         );
     }
 }
