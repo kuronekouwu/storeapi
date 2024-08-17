@@ -5,6 +5,7 @@ import dev.mottolab.storeapi.dto.response.shipping.ShippingRateDTO;
 import dev.mottolab.storeapi.entity.ShippingEntity;
 import dev.mottolab.storeapi.entity.ShippingTrackerEntity;
 import dev.mottolab.storeapi.service.ShippingService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,16 +34,21 @@ public class ShippingController {
             // Search tracking number
             Optional<ShippingEntity> shipping =  shippingService.getShippingByTrackingId(trackingNo);
             if(shipping.isPresent()){
-                ShippingEntity shippingEntity = shipping.get();
-                // New entity
-                ShippingTrackerEntity shippingTrackerEntity = new ShippingTrackerEntity();
-                shippingTrackerEntity.setShipping(shippingEntity);
-                shippingTrackerEntity.setStatus(data.getStatus());
-                shippingTrackerEntity.setDescription(data.getStatusDescription());
-                shippingTrackerEntity.setLocation(data.getLocation());
-                shippingTrackerEntity.setReceiveName(data.getReceiverName());
+                ShippingTrackerEntity shippingTrackerEntity = getShippingTrackerEntity(data, shipping);
                 shippingService.updateShippingTracker(shippingTrackerEntity);
             }
         }
+    }
+
+    private static @NotNull ShippingTrackerEntity getShippingTrackerEntity(ThailandPostCallback.ThailandPostCallbackItem data, Optional<ShippingEntity> shipping) {
+        ShippingEntity shippingEntity = shipping.get();
+        // New entity
+        ShippingTrackerEntity shippingTrackerEntity = new ShippingTrackerEntity();
+        shippingTrackerEntity.setShipping(shippingEntity);
+        shippingTrackerEntity.setStatus(data.getStatus());
+        shippingTrackerEntity.setDescription(data.getStatusDescription());
+        shippingTrackerEntity.setLocation(data.getLocation());
+        shippingTrackerEntity.setReceiveName(data.getReceiverName());
+        return shippingTrackerEntity;
     }
 }
