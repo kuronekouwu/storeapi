@@ -1,9 +1,9 @@
 package dev.mottolab.storeapi;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.google.zxing.NotFoundException;
 import dev.mottolab.storeapi.dto.exception.*;
 import dev.mottolab.storeapi.exception.*;
-import dev.mottolab.storeapi.provider.rdcw.qrcr.exception.QRCRError;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.exception.SlipVerifyError;
 import dev.mottolab.storeapi.provider.truemoney.voucher.excpetion.TmnVoucherError;
 import org.springframework.http.HttpStatus;
@@ -113,11 +113,11 @@ public class RestErrorHandler {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
     }
 
-    @ExceptionHandler(QRCRError.class)
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseStatusException qrcrError(QRCRError ex) {
-        return new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage());
+    public ResponseStatusException qrcodeError() {
+        return new ResponseStatusException(HttpStatus.BAD_REQUEST, "QRCode not exist.");
     }
 
     @ExceptionHandler(SlipVerifyError.class)

@@ -1,13 +1,13 @@
 package dev.mottolab.storeapi.config;
 
-import dev.mottolab.storeapi.provider.rdcw.qrcr.QRCRProvider;
+import dev.mottolab.storeapi.provider.qrcode.QRCodeProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class QRCRConfiguration {
+public class QRCodeConfiguration {
     @Bean
-    public QRCRProvider qrcrProvider() {
-        return new QRCRProvider();
+    public QRCodeProvider qrCodeProvider() {
+        return new QRCodeProvider();
     }
 }

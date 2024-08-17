@@ -3,6 +3,7 @@ package dev.mottolab.storeapi.controller;
 import com.github.f4b6a3.ulid.Ulid;
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.google.gson.Gson;
+import com.google.zxing.NotFoundException;
 import dev.mottolab.storeapi.dto.request.payment.GeneratePaymentDTO;
 import dev.mottolab.storeapi.dto.request.payment.ProceedTmnVoucherDTO;
 import dev.mottolab.storeapi.dto.request.payment.SlipMethodDTO;
@@ -16,7 +17,6 @@ import dev.mottolab.storeapi.entity.payment.PaymentMethod;
 import dev.mottolab.storeapi.exception.*;
 import dev.mottolab.storeapi.provider.chillpay.exception.ChillpayCreatePaymentFail;
 import dev.mottolab.storeapi.provider.chillpay.response.PaymentCreateURLResult;
-import dev.mottolab.storeapi.provider.rdcw.qrcr.exception.QRCRError;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.exception.SlipVerifyError;
 import dev.mottolab.storeapi.provider.rdcw.slipverify.response.SlipVerifyResponse;
 import dev.mottolab.storeapi.provider.scbopenapi.response.PromptpayCreateResult;
@@ -88,7 +88,7 @@ public class PaymentController {
             @RequestParam("order_id") UUID orderId,
             @RequestParam("method") SlipMethodDTO method
 
-    ) throws IOException, QRCRError, QRCodeNotExist, SlipVerifyError, ParseException {
+    ) throws IOException, NotFoundException, QRCodeNotExist, SlipVerifyError, ParseException {
         OrderEntity order = this.orderService.getOrder(
                 user.getUserId(),
                 orderId
@@ -111,7 +111,7 @@ public class PaymentController {
                 throw new PaymentMismatch();
             }
 
-            data = this.paymentService.doProceedViaSlipVerifyByBankAccount(file.getBytes(), order);
+            data = this.paymentService.doProceedViaSlipVerifyByBankAccount(file.getBytes());
         }else if(method == SlipMethodDTO.PROMPTPAY){
             if(order.getPayment().getMethod() != PaymentMethod.SLIP_VERIFY_VIA_PROMPTPAY){
                 throw new PaymentMismatch();
