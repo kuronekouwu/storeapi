@@ -79,6 +79,7 @@ public class PaymentController {
 
     @GetMapping("/slip/banking/getInformation")
     public void getBankInformation(){
+        // TODO: Please implement this.
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented");
     }
 
