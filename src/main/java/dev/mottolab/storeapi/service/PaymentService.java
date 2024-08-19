@@ -126,7 +126,7 @@ public class PaymentService {
         String recieveBank = data.receivingBank;
         if(
                !(recieveBank != null && !Objects.equals(recieveBank, this.bankCode)) ||
-                        ValidatorService.checkMatchString(ppValue, recieveAccount) < 3
+                        ValidatorService.checkMatchString(bankAccount, recieveAccount) < 3
         ){
             throw new PaymentProceedFail("Slip receiver incorrect.");
         }
