@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<OrderEntity, UUID> {
-    List<OrderEntity> findAllByUserId(Integer userId, PageRequest page);
+    List<OrderEntity> findAllByUserIdOrderByCreatedAtDesc(Integer userId, PageRequest page);
     Optional<OrderEntity> findByUserIdAndId(Integer userId, UUID orderId);
     Optional<OrderEntity> findByPaymentId(UUID paymentId);
 }

@@ -157,7 +157,7 @@ public class OrderService {
     }
 
     public List<OrderEntity> getAllOrders(Integer userId, Integer page, Integer size) {
-        return this.orderRepository.findAllByUserId(userId, PageRequest.of(page, size));
+        return this.orderRepository.findAllByUserIdOrderByCreatedAtDesc(userId, PageRequest.of(page, size));
     }
 
     public Optional<OrderEntity> getOrderByPaymentId(UUID paymentId) {
