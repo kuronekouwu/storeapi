@@ -21,7 +21,10 @@ public class TrackingDTO {
     public TrackingDTO(ShippingEntity entity, List<ShippingTrackerEntity> items) {
         this.trackingId = entity.getTrackingNumber();
         this.trackingMethod = entity.getShippingMethod();
-        this.items = items.stream().map(TrackingItemsDTO::new).toList();
+        if(items != null){
+            this.items = items.stream().map(TrackingItemsDTO::new).toList();
+        }
+
     }
 
     @Getter
