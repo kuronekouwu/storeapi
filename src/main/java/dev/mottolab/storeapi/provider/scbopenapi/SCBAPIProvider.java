@@ -76,8 +76,10 @@ public class SCBAPIProvider {
 
             if(response.isSuccessful()) {
                 // Parse body
-                if(response.body() != null){
-                    OAuth2Token parsed = gson.fromJson(response.body().string(), OAuth2Token.class);
+                ResponseBody respBody = response.body();
+
+                if(respBody != null){
+                    OAuth2Token parsed = gson.fromJson(respBody.string(), OAuth2Token.class);
                     this.accessToken = parsed.getData().getAccessToken();
                     this.tokenType = parsed.getData().getTokenType();
                     this.expiredIn = parsed.getData().getExpiresAt() * 1000;
