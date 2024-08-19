@@ -39,5 +39,5 @@ Maybe if I bought or find trial IntelliJ IDEA
 # API Document
 - [Postman](./docs/StoreAPI.postman_collection.json)
 
-# Enjoy :)
+# Happy integration
 ![furina_cute](https://media1.tenor.com/m/fvxaQE5rYqwAAAAC/anime-girl.gif)
