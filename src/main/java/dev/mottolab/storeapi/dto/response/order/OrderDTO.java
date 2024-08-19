@@ -42,12 +42,11 @@ public class OrderDTO {
         this.items = orderProduct.stream().map(OrderProductResponseDTO::new).toList();
         this.result = order.getStatus();
         this.total = order.getTotal();
+        this.shipping = new ShippingInfoDTO(order.getShipping(), shippingTracker);
         if(payment != null){
             this.payment = new PaymentInfoDTO(payment);
         }
-        if(order.getShipping() != null){
-            this.shipping = new ShippingInfoDTO(order.getShipping(), shippingTracker);
-        }
+
     }
 
     @Getter
