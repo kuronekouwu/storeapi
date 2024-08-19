@@ -125,7 +125,7 @@ public class PaymentService {
         String recieveAccount = data.receiver.account.value;
         String recieveBank = data.receivingBank;
         if(
-               !(recieveBank != null && !Objects.equals(recieveBank, this.bankAccount)) ||
+               !(recieveBank != null && !Objects.equals(recieveBank, this.bankCode)) ||
                         ValidatorService.checkMatchString(ppValue, recieveAccount) < 3
         ){
             throw new PaymentProceedFail("Slip receiver incorrect.");
@@ -170,8 +170,8 @@ public class PaymentService {
         return this.pp.generateQR29(amount);
     }
 
-    public PaymentEntity updatePayment(PaymentEntity payment){
-        return this.repo.save(payment);
+    public void updatePayment(PaymentEntity payment){
+        this.repo.save(payment);
     }
 
     public Optional<PaymentEntity> getPaymentByTransactionId(String transactionId){

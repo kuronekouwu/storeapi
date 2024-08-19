@@ -29,7 +29,7 @@ public class OrderDTO {
     @JsonProperty("items")
     private List<OrderProductResponseDTO> items;
     @JsonProperty("shipping")
-    private ShippingInfoDTO shipping = null;
+    private ShippingInfoDTO shipping;
 
     public OrderDTO(
             OrderEntity order,

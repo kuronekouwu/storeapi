@@ -136,8 +136,8 @@ public class OrderService {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No product item found.");
     }
 
-    public OrderEntity updateOrder(OrderEntity orderEntity) {
-        return this.orderRepository.save(orderEntity);
+    public void updateOrder(OrderEntity orderEntity) {
+        this.orderRepository.save(orderEntity);
     }
 
     private static OrderProductEntity getOrderProductEntity(

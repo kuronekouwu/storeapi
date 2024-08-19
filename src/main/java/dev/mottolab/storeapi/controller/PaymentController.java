@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -44,7 +45,7 @@ public class PaymentController {
     private final OrderService orderService;
     private final PaymentService paymentService;
     // Parser
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public PaymentController(PaymentService paymentService, OrderService orderService) {
         this.paymentService = paymentService;
@@ -100,7 +101,7 @@ public class PaymentController {
 
 
         // Check if file is image
-        if(!file.getContentType().startsWith("image")){
+        if(!Objects.requireNonNull(file.getContentType()).startsWith("image")){
             throw new FileRequireImage();
         }
 

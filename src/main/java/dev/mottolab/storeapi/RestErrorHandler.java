@@ -164,7 +164,7 @@ public class RestErrorHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseStatusException methodArgTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    public ResponseStatusException methodArgTypeMismatch() {
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed body.");
     }
 
@@ -211,7 +211,7 @@ public class RestErrorHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseStatusException httpMessageNotReadableException(HttpMessageNotReadableException ex) {
+    public ResponseStatusException httpMessageNotReadableException() {
         return new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Invalid body."

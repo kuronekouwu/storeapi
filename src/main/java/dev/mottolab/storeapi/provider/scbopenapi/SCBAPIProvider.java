@@ -9,6 +9,7 @@ import okhttp3.*;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
@@ -22,9 +23,9 @@ public class SCBAPIProvider {
     private String tokenType;
     private Integer expiredIn = 0;
     // HTTP Client
-    private OkHttpClient httpClient = new OkHttpClient();
+    private final OkHttpClient httpClient = new OkHttpClient();
     // Parser
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     public SCBAPIProvider(
             String apiUrl,
@@ -50,7 +51,7 @@ public class SCBAPIProvider {
 
     public Boolean generateToken() {
         // Create object
-        HashMap hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("applicationKey", this.clientId);
         hashMap.put("applicationSecret", this.clientSecret);
 
@@ -88,7 +89,7 @@ public class SCBAPIProvider {
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
         return false;
@@ -100,7 +101,7 @@ public class SCBAPIProvider {
         }
 
         // Create object
-        HashMap hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("qrType", "PP");
         hashMap.put("ppType", "BILLERID");
         hashMap.put("ppId", this.merchantId);
@@ -131,11 +132,13 @@ public class SCBAPIProvider {
             Response response = this.httpClient.newCall(req).execute();
 
             if(response.isSuccessful()) {
-                String bodyString = response.body().string();
-                return gson.fromJson(bodyString, PromptpayCreateResult.class);
+                if(response.body() != null){
+                    String bodyString = response.body().string();
+                    return gson.fromJson(bodyString, PromptpayCreateResult.class);
+                }
             }
         }catch (Exception e){
-            e.printStackTrace();
+           log.error(e.getMessage(), e);
         }
 
         return null;
