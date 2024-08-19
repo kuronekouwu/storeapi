@@ -1,0 +1,4341 @@
+{
+	"info": {
+		"_postman_id": "52cedcec-a35d-4779-8cc4-26aaa8fa3e01",
+		"name": "StoreAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10887671"
+	},
+	"item": [
+		{
+			"name": "Authenticate",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Get body",
+									"// Parse JSON",
+									"const js = pm.response.json()",
+									"// Store token",
+									"pm.collectionVariables.set(\"AUTHOIRZATION_ACCESS_TOKEN\", js[\"access_token\"])"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"account\": \"me@m307.dev\",\n    \"password\": \"1234567890\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/authen/login",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"authen",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"account\": \"me@m307.dev\",\n    \"password\": \"1234567890\",\n    \"display_name\": \"Store API Admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/authen/register",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"authen",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create new product (ADMIN Required)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test category\",\n    \"description\": \"Hello 2\",\n    \"price\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/products/create",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"products",
+								"create"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test category\",\n    \"description\": \"Hello 2\",\n    \"price\": 100\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/products/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"products",
+										"create"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:37:14 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"01915b31-2abf-73f7-80e7-b976cc523258\",\n    \"slug\": \"test-category-3\",\n    \"name\": \"Test category\",\n    \"description\": \"Hello 2\",\n    \"price\": 100,\n    \"image\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/products/getList?page=0&size=100",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"products",
+								"getList"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/products/getList?page=0&size=100",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"products",
+										"getList"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:37:04 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"01915617-e7dc-7e7a-a94a-572322d30a7d\",\n        \"slug\": \"test-category\",\n        \"name\": \"Test category\",\n        \"description\": \"Hello 2\",\n        \"price\": 100,\n        \"image\": null\n    },\n    {\n        \"id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\",\n        \"slug\": \"test-category-2\",\n        \"name\": \"Test category\",\n        \"description\": \"Hello 2\",\n        \"price\": 100,\n        \"image\": null\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get product by Slug",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/products/getInfo/slug/:slug",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"products",
+								"getInfo",
+								"slug",
+								":slug"
+							],
+							"variable": [
+								{
+									"key": "slug",
+									"value": "test-category"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/products/getInfo/slug/:slug",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"products",
+										"getInfo",
+										"slug",
+										":slug"
+									],
+									"variable": [
+										{
+											"key": "slug",
+											"value": "test-category"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:36:58 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"01915617-e7dc-7e7a-a94a-572322d30a7d\",\n    \"slug\": \"test-category\",\n    \"name\": \"Test category\",\n    \"description\": \"Hello 2\",\n    \"price\": 100,\n    \"image\": null\n}"
+						},
+						{
+							"name": "Product not exist",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/products/getInfo/slug/:slug",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"products",
+										"getInfo",
+										"slug",
+										":slug"
+									],
+									"variable": [
+										{
+											"key": "slug",
+											"value": "test-category"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/problem+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:38:19 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Not Found\",\n    \"status\": 404,\n    \"detail\": \"Product not exist\",\n    \"instance\": \"/products/getInfo/slug/test-category\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update product by ID (ADMIN Required)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test category\",\n    \"description\": \"Hello 2\",\n    \"price\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/products/getInfo/id/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"products",
+								"getInfo",
+								"id",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01915617-e7dc-7e7a-a94a-572322d30a7d"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test category\",\n    \"description\": \"Hello 2\",\n    \"price\": 100\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/products/getInfo/id/:id",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"products",
+										"getInfo",
+										"id",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "01915617-e7dc-7e7a-a94a-572322d30a7d"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:36:51 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"01915617-e7dc-7e7a-a94a-572322d30a7d\",\n    \"slug\": \"test-category\",\n    \"name\": \"Test category\",\n    \"description\": \"Hello 2\",\n    \"price\": 100,\n    \"image\": null\n}"
+						},
+						{
+							"name": "Product not exist",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test category\",\n    \"description\": \"Hello 2\",\n    \"price\": 100\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/products/getInfo/id/:id",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"products",
+										"getInfo",
+										"id",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "01915617-e7dc-7e7a-a94a-572322d30a7d"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/problem+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:38:05 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Not Found\",\n    \"status\": 404,\n    \"detail\": \"Product not exist\",\n    \"instance\": \"/products/getInfo/id/01915617-e7dc-7e7a-a94a-572322d30a7d\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete product by ID (ADMIN Required)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test category\",\n    \"description\": \"Hello 2\",\n    \"price\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/products/getInfo/id/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"products",
+								"getInfo",
+								"id",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01915617-e7dc-7e7a-a94a-572322d30a7d"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test category\",\n    \"description\": \"Hello 2\",\n    \"price\": 100\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/products/getInfo/id/:id",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"products",
+										"getInfo",
+										"id",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "01915617-e7dc-7e7a-a94a-572322d30a7d"
+										}
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:37:49 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Basket",
+			"item": [
+				{
+					"name": "Get basket",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/baskets",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"baskets"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/baskets",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"baskets"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:41:24 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 2,\n        \"product\": {\n            \"id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\",\n            \"slug\": \"test-category-2\",\n            \"name\": \"Test category\",\n            \"description\": \"Hello 2\",\n            \"price\": 100,\n            \"image\": null\n        }\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Add baskets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/baskets",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"baskets"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"product_id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/baskets",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"baskets"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Length",
+									"value": "0"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:41:14 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Create order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address_id\": 2,\n    \"shipping_id\": 1,\n    \"pay_method\": \"PROMPTPAY\", // [TRUEMONEY_ENVELOP, PROMPTPAY, SLIP_VERIFY_VIA_ACCOUNT, SLIP_VERIFY_VIA_PROMPTPAY, TRUEMONEY_APP]\n    \"items\": [{\n        \"id\": 302,\n        \"unit\": 5\n    }]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/orders/user/basket/createOrder",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"orders",
+								"user",
+								"basket",
+								"createOrder"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"address_id\": 2,\n    \"shipping_id\": 1,\n    \"items\": [{\n        \"id\": 52,\n        \"unit\": 5\n    }]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/orders/user/basket/createOrder",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"orders",
+										"user",
+										"basket",
+										"createOrder"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 13:22:19 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"order_id\": \"01915b5a-71db-7433-96fe-0e31a9b8201e\",\n    \"created_at\": 1723814539752,\n    \"total\": 500,\n    \"discount\": 0,\n    \"status\": \"PENDING\",\n    \"payment\": null,\n    \"items\": [\n        {\n            \"id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\",\n            \"name\": \"Test category\",\n            \"image\": null,\n            \"price\": 100,\n            \"quality\": 5\n        }\n    ],\n    \"shipping\": {\n        \"shipping_type\": null,\n        \"full_name\": \"นายสมชาย รักกะ\",\n        \"address_line_1\": \"1 หมู่ 4\",\n        \"address_line_2\": null,\n        \"sub_district\": \"สายไหม\",\n        \"district\": \"เขตสายไหม\",\n        \"province\": \"กรุงเทพมหานคร\",\n        \"zip_code\": 10220,\n        \"shipping_rate\": {\n            \"id\": 1,\n            \"name\": \"EMS\",\n            \"description\": null,\n            \"amount\": 50\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Check order by Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/orders/user/checkOrder/01915bea-6f55-7f97-be1f-bfb67e9af466",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"orders",
+								"user",
+								"checkOrder",
+								"01915bea-6f55-7f97-be1f-bfb67e9af466"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success (PENDING)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/orders/user/checkOrder/01915b5a-71db-7433-96fe-0e31a9b8201e",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"orders",
+										"user",
+										"checkOrder",
+										"01915b5a-71db-7433-96fe-0e31a9b8201e"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 13:22:37 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"order_id\": \"01915b5a-71db-7433-96fe-0e31a9b8201e\",\n    \"created_at\": 1723814539720,\n    \"total\": 500,\n    \"discount\": 0,\n    \"status\": \"PENDING\",\n    \"payment\": {\n        \"method\": \"TRUEMONEY_APP\",\n        \"amount\": 50.0,\n        \"status\": \"PENDING\",\n        \"paid_time\": null\n    },\n    \"items\": [\n        {\n            \"id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\",\n            \"name\": \"Test category\",\n            \"image\": null,\n            \"price\": 100,\n            \"quality\": 5\n        }\n    ],\n    \"shipping\": {\n        \"full_name\": \"นายสมชาย รักกะ\",\n        \"address_line_1\": \"1 หมู่ 4\",\n        \"address_line_2\": null,\n        \"sub_district\": \"สายไหม\",\n        \"district\": \"เขตสายไหม\",\n        \"province\": \"กรุงเทพมหานคร\",\n        \"zip_code\": 10220,\n        \"shipping_rate\": {\n            \"id\": 1,\n            \"name\": \"EMS\",\n            \"description\": null,\n            \"amount\": 50\n        },\n        \"tracking\": null\n    }\n}"
+						},
+						{
+							"name": "Response success (PREPAREING)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/orders/user/checkOrder/01915b72-62ba-771d-a696-b629c2ab1de6",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"orders",
+										"user",
+										"checkOrder",
+										"01915b72-62ba-771d-a696-b629c2ab1de6"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 13:52:29 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"order_id\": \"01915b72-62ba-771d-a696-b629c2ab1de6\",\n    \"created_at\": 1723816108710,\n    \"total\": 500,\n    \"discount\": 0,\n    \"status\": \"PREPARING\",\n    \"payment\": {\n        \"method\": \"TRUEMONEY_APP\",\n        \"amount\": 500,\n        \"status\": \"SUCCESS\",\n        \"paid_time\": 1723816318000\n    },\n    \"items\": [\n        {\n            \"id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\",\n            \"name\": \"Test category\",\n            \"image\": null,\n            \"price\": 100,\n            \"quality\": 5\n        }\n    ],\n    \"shipping\": {\n        \"full_name\": \"นายสมชาย รักกะ\",\n        \"address_line_1\": \"1 หมู่ 4\",\n        \"address_line_2\": null,\n        \"sub_district\": \"สายไหม\",\n        \"district\": \"เขตสายไหม\",\n        \"province\": \"กรุงเทพมหานคร\",\n        \"zip_code\": 10220,\n        \"shipping_rate\": {\n            \"id\": 1,\n            \"name\": \"EMS\",\n            \"description\": null,\n            \"amount\": 50\n        }\n    }\n}"
+						},
+						{
+							"name": "Response success (SHIPPING)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/orders/user/checkOrder/01915bea-6f55-7f97-be1f-bfb67e9af466",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"orders",
+										"user",
+										"checkOrder",
+										"01915bea-6f55-7f97-be1f-bfb67e9af466"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 18:03:33 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"order_id\": \"01915bea-6f55-7f97-be1f-bfb67e9af466\",\n    \"created_at\": 1723823976242,\n    \"total\": 500,\n    \"discount\": 0,\n    \"status\": \"SHIPPING\",\n    \"payment\": {\n        \"method\": \"TRUEMONEY_APP\",\n        \"amount\": 50,\n        \"status\": \"SUCCESS\",\n        \"paid_time\": 1723824194000\n    },\n    \"items\": [\n        {\n            \"id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\",\n            \"name\": \"Test category\",\n            \"image\": null,\n            \"price\": 100,\n            \"quality\": 5\n        }\n    ],\n    \"shipping\": {\n        \"id\": 152,\n        \"full_name\": \"นายสมชาย รักกะ\",\n        \"address_line_1\": \"1 หมู่ 4\",\n        \"address_line_2\": null,\n        \"sub_district\": \"สายไหม\",\n        \"district\": \"เขตสายไหม\",\n        \"province\": \"กรุงเทพมหานคร\",\n        \"zip_code\": 10220,\n        \"shipping_rate\": {\n            \"id\": 1,\n            \"name\": \"EMS\",\n            \"description\": null,\n            \"amount\": 50\n        },\n        \"tracking\": {\n            \"items\": [\n                {\n                    \"status\": \"103\",\n                    \"description\": \"รับฝาก\",\n                    \"location\": \"ศูนย์ศิลปาชีพบางไทร\",\n                    \"receiver_name\": \"\"\n                }\n            ],\n            \"tracking_id\": \"TH1234567891\",\n            \"method\": \"THAILAND_POST\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get order list",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/orders/user/getList?page=0&size=20",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"orders",
+								"user",
+								"getList"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/orders/user/getList?page=0&size=20",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"orders",
+										"user",
+										"getList"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0"
+										},
+										{
+											"key": "size",
+											"value": "20"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 19 Aug 2024 05:52:32 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"order_id\": \"01915bec-2d75-7960-8fba-ca6ac7bed041\",\n        \"created_at\": 1723824090470,\n        \"total\": 500,\n        \"discount\": 0,\n        \"status\": \"PENDING\",\n        \"payment\": null,\n        \"items\": [\n            {\n                \"id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\",\n                \"name\": \"Test category\",\n                \"image\": null,\n                \"price\": 100,\n                \"quality\": 5\n            }\n        ],\n        \"shipping\": {\n            \"id\": 202,\n            \"full_name\": \"นายสมชาย รักกะ\",\n            \"address_line_1\": \"1 หมู่ 4\",\n            \"address_line_2\": null,\n            \"sub_district\": \"สายไหม\",\n            \"district\": \"เขตสายไหม\",\n            \"province\": \"กรุงเทพมหานคร\",\n            \"zip_code\": 10220,\n            \"shipping_rate\": {\n                \"id\": 1,\n                \"name\": \"EMS\",\n                \"description\": null,\n                \"amount\": 50\n            },\n            \"tracking\": {\n                \"items\": null,\n                \"tracking_id\": \"TH1234567890\",\n                \"method\": \"THAILAND_POST\"\n            }\n        }\n    },\n    {\n        \"order_id\": \"019161cc-7cdd-7060-9a30-daa91a1705d2\",\n        \"created_at\": 1723922676933,\n        \"total\": 500,\n        \"discount\": 0,\n        \"status\": \"PENDING\",\n        \"payment\": null,\n        \"items\": [\n            {\n                \"id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\",\n                \"name\": \"Test category\",\n                \"image\": null,\n                \"price\": 100,\n                \"quality\": 5\n            }\n        ],\n        \"shipping\": {\n            \"id\": 302,\n            \"full_name\": \"นายสมชาย รักกะ\",\n            \"address_line_1\": \"1 หมู่ 4\",\n            \"address_line_2\": null,\n            \"sub_district\": \"สายไหม\",\n            \"district\": \"เขตสายไหม\",\n            \"province\": \"กรุงเทพมหานคร\",\n            \"zip_code\": 10220,\n            \"shipping_rate\": {\n                \"id\": 1,\n                \"name\": \"EMS\",\n                \"description\": null,\n                \"amount\": 50\n            },\n            \"tracking\": null\n        }\n    },\n    {\n        \"order_id\": \"01915bea-6f55-7f97-be1f-bfb67e9af466\",\n        \"created_at\": 1723823976242,\n        \"total\": 500,\n        \"discount\": 0,\n        \"status\": \"PREPARING\",\n        \"payment\": null,\n        \"items\": [\n            {\n                \"id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\",\n                \"name\": \"Test category\",\n                \"image\": null,\n                \"price\": 100,\n                \"quality\": 5\n            }\n        ],\n        \"shipping\": {\n            \"id\": 152,\n            \"full_name\": \"นายสมชาย รักกะ\",\n            \"address_line_1\": \"1 หมู่ 4\",\n            \"address_line_2\": null,\n            \"sub_district\": \"สายไหม\",\n            \"district\": \"เขตสายไหม\",\n            \"province\": \"กรุงเทพมหานคร\",\n            \"zip_code\": 10220,\n            \"shipping_rate\": {\n                \"id\": 1,\n                \"name\": \"EMS\",\n                \"description\": null,\n                \"amount\": 50\n            },\n            \"tracking\": {\n                \"items\": null,\n                \"tracking_id\": \"TH1234567891\",\n                \"method\": \"THAILAND_POST\"\n            }\n        }\n    },\n    {\n        \"order_id\": \"019161e4-fbdc-78e9-b2dd-a415fb2f73f6\",\n        \"created_at\": 1723924282312,\n        \"total\": 500,\n        \"discount\": 0,\n        \"status\": \"PENDING\",\n        \"payment\": null,\n        \"items\": [\n            {\n                \"id\": \"01915b2d-957e-74f9-8e1a-9bfa1b0abe38\",\n                \"name\": \"Test category\",\n                \"image\": null,\n                \"price\": 100,\n                \"quality\": 5\n            }\n        ],\n        \"shipping\": {\n            \"id\": 352,\n            \"full_name\": \"นายสมชาย รักกะ\",\n            \"address_line_1\": \"1 หมู่ 4\",\n            \"address_line_2\": null,\n            \"sub_district\": \"สายไหม\",\n            \"district\": \"เขตสายไหม\",\n            \"province\": \"กรุงเทพมหานคร\",\n            \"zip_code\": 10220,\n            \"shipping_rate\": {\n                \"id\": 1,\n                \"name\": \"EMS\",\n                \"description\": null,\n                \"amount\": 50\n            },\n            \"tracking\": null\n        }\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Change PREPAREING to SHIPPING",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tracking_id\": \"EY999999998TH\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/orders/admin/initTracking/:id",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"orders",
+								"admin",
+								"initTracking",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "01915bea-6f55-7f97-be1f-bfb67e9af466"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Address",
+					"item": [
+						{
+							"name": "Get user address",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/user/address",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"user",
+										"address"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Response success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{API_URL}}/user/address",
+											"host": [
+												"{{API_URL}}"
+											],
+											"path": [
+												"user",
+												"address"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 16 Aug 2024 12:46:43 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"id\": 1,\n        \"full_name\": \"test test\",\n        \"address_line_1\": \"211/11\",\n        \"address_line_2\": null,\n        \"sub_district\": \"แม่ต๋ำ\",\n        \"district\": \"เมืองพะเยา\",\n        \"province\": \"พะเยา\",\n        \"zip_code\": 56000\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Create user address",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"full_name\": \"นายสมชาย รักกะ\",\n    \"mobile\": \"0884441111\",\n    \"address_line_1\": \"1 หมู่ 4\",\n    \"address_id\": 104201\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/user/address",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"user",
+										"address"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Response success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"full_name\": \"นายสมชาย รักกะ\",\n    \"mobile\": \"0884441111\",\n    \"address_line_1\": \"1 หมู่ 4\",\n    \"address_id\": 104201\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{API_URL}}/user/address",
+											"host": [
+												"{{API_URL}}"
+											],
+											"path": [
+												"user",
+												"address"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 16 Aug 2024 12:49:54 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 2,\n    \"full_name\": \"นายสมชาย รักกะ\",\n    \"address_line_1\": \"1 หมู่ 4\",\n    \"address_line_2\": null,\n    \"sub_district\": \"สายไหม\",\n    \"district\": \"เขตสายไหม\",\n    \"province\": \"กรุงเทพมหานคร\",\n    \"zip_code\": 10220\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Get me",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/user/@me",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"user",
+								"@me"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/user/@me",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"user",
+										"@me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:44:22 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"account\": \"intakamsririeak@gmail.com\",\n    \"display_name\": \"AONA Demo\",\n    \"joined_at\": \"2024-08-15T12:48:06.449+00:00\",\n    \"permissions\": [\n        \"CATEGORY_DELETE\",\n        \"PRODUCT_DELETE\",\n        \"PRODUCT_UPDATE\",\n        \"CATEGORY_CREATE\",\n        \"PRODUCT_CREATE\",\n        \"CATEGORY_UPDATE\"\n    ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Address",
+			"item": [
+				{
+					"name": "Get provinces",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/address/getProvinces",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"address",
+								"getProvinces"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/address/getProvinces",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"address",
+										"getProvinces"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:47:59 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 64,\n        \"name\": \"กระบี่\"\n    },\n    {\n        \"id\": 1,\n        \"name\": \"กรุงเทพมหานคร\"\n    },\n    {\n        \"id\": 56,\n        \"name\": \"กาญจนบุรี\"\n    },\n    {\n        \"id\": 34,\n        \"name\": \"กาฬสินธุ์\"\n    },\n    {\n        \"id\": 49,\n        \"name\": \"กำแพงเพชร\"\n    },\n    {\n        \"id\": 28,\n        \"name\": \"ขอนแก่น\"\n    },\n    {\n        \"id\": 13,\n        \"name\": \"จันทบุรี\"\n    },\n    {\n        \"id\": 15,\n        \"name\": \"ฉะเชิงเทรา\"\n    },\n    {\n        \"id\": 11,\n        \"name\": \"ชลบุรี\"\n    },\n    {\n        \"id\": 9,\n        \"name\": \"ชัยนาท\"\n    },\n    {\n        \"id\": 25,\n        \"name\": \"ชัยภูมิ\"\n    },\n    {\n        \"id\": 69,\n        \"name\": \"ชุมพร\"\n    },\n    {\n        \"id\": 45,\n        \"name\": \"เชียงราย\"\n    },\n    {\n        \"id\": 38,\n        \"name\": \"เชียงใหม่\"\n    },\n    {\n        \"id\": 72,\n        \"name\": \"ตรัง\"\n    },\n    {\n        \"id\": 14,\n        \"name\": \"ตราด\"\n    },\n    {\n        \"id\": 50,\n        \"name\": \"ตาก\"\n    },\n    {\n        \"id\": 17,\n        \"name\": \"นครนายก\"\n    },\n    {\n        \"id\": 58,\n        \"name\": \"นครปฐม\"\n    },\n    {\n        \"id\": 36,\n        \"name\": \"นครพนม\"\n    },\n    {\n        \"id\": 19,\n        \"name\": \"นครราชสีมา\"\n    },\n    {\n        \"id\": 63,\n        \"name\": \"นครศรีธรรมราช\"\n    },\n    {\n        \"id\": 47,\n        \"name\": \"นครสวรรค์\"\n    },\n    {\n        \"id\": 3,\n        \"name\": \"นนทบุรี\"\n    },\n    {\n        \"id\": 76,\n        \"name\": \"นราธิวาส\"\n    },\n    {\n        \"id\": 43,\n        \"name\": \"น่าน\"\n    },\n    {\n        \"id\": 77,\n        \"name\": \"บึงกาฬ\"\n    },\n    {\n        \"id\": 20,\n        \"name\": \"บุรีรัมย์\"\n    },\n    {\n        \"id\": 4,\n        \"name\": \"ปทุมธานี\"\n    },\n    {\n        \"id\": 62,\n        \"name\": \"ประจวบคีรีขันธ์\"\n    },\n    {\n        \"id\": 16,\n        \"name\": \"ปราจีนบุรี\"\n    },\n    {\n        \"id\": 74,\n        \"name\": \"ปัตตานี\"\n    },\n    {\n        \"id\": 5,\n        \"name\": \"พระนครศรีอยุธยา\"\n    },\n    {\n        \"id\": 44,\n        \"name\": \"พะเยา\"\n    },\n    {\n        \"id\": 65,\n        \"name\": \"พังงา\"\n    },\n    {\n        \"id\": 73,\n        \"name\": \"พัทลุง\"\n    },\n    {\n        \"id\": 53,\n        \"name\": \"พิจิตร\"\n    },\n    {\n        \"id\": 52,\n        \"name\": \"พิษณุโลก\"\n    },\n    {\n        \"id\": 61,\n        \"name\": \"เพชรบุรี\"\n    },\n    {\n        \"id\": 54,\n        \"name\": \"เพชรบูรณ์\"\n    },\n    {\n        \"id\": 42,\n        \"name\": \"แพร่\"\n    },\n    {\n        \"id\": 66,\n        \"name\": \"ภูเก็ต\"\n    },\n    {\n        \"id\": 32,\n        \"name\": \"มหาสารคาม\"\n    },\n    {\n        \"id\": 37,\n        \"name\": \"มุกดาหาร\"\n    },\n    {\n        \"id\": 46,\n        \"name\": \"แม่ฮ่องสอน\"\n    },\n    {\n        \"id\": 24,\n        \"name\": \"ยโสธร\"\n    },\n    {\n        \"id\": 75,\n        \"name\": \"ยะลา\"\n    },\n    {\n        \"id\": 33,\n        \"name\": \"ร้อยเอ็ด\"\n    },\n    {\n        \"id\": 68,\n        \"name\": \"ระนอง\"\n    },\n    {\n        \"id\": 12,\n        \"name\": \"ระยอง\"\n    },\n    {\n        \"id\": 55,\n        \"name\": \"ราชบุรี\"\n    },\n    {\n        \"id\": 7,\n        \"name\": \"ลพบุรี\"\n    },\n    {\n        \"id\": 40,\n        \"name\": \"ลำปาง\"\n    },\n    {\n        \"id\": 39,\n        \"name\": \"ลำพูน\"\n    },\n    {\n        \"id\": 30,\n        \"name\": \"เลย\"\n    },\n    {\n        \"id\": 22,\n        \"name\": \"ศรีสะเกษ\"\n    },\n    {\n        \"id\": 35,\n        \"name\": \"สกลนคร\"\n    },\n    {\n        \"id\": 70,\n        \"name\": \"สงขลา\"\n    },\n    {\n        \"id\": 71,\n        \"name\": \"สตูล\"\n    },\n    {\n        \"id\": 2,\n        \"name\": \"สมุทรปราการ\"\n    },\n    {\n        \"id\": 60,\n        \"name\": \"สมุทรสงคราม\"\n    },\n    {\n        \"id\": 59,\n        \"name\": \"สมุทรสาคร\"\n    },\n    {\n        \"id\": 18,\n        \"name\": \"สระแก้ว\"\n    },\n    {\n        \"id\": 10,\n        \"name\": \"สระบุรี\"\n    },\n    {\n        \"id\": 8,\n        \"name\": \"สิงห์บุรี\"\n    },\n    {\n        \"id\": 51,\n        \"name\": \"สุโขทัย\"\n    },\n    {\n        \"id\": 57,\n        \"name\": \"สุพรรณบุรี\"\n    },\n    {\n        \"id\": 67,\n        \"name\": \"สุราษฎร์ธานี\"\n    },\n    {\n        \"id\": 21,\n        \"name\": \"สุรินทร์\"\n    },\n    {\n        \"id\": 31,\n        \"name\": \"หนองคาย\"\n    },\n    {\n        \"id\": 27,\n        \"name\": \"หนองบัวลำภู\"\n    },\n    {\n        \"id\": 6,\n        \"name\": \"อ่างทอง\"\n    },\n    {\n        \"id\": 26,\n        \"name\": \"อำนาจเจริญ\"\n    },\n    {\n        \"id\": 29,\n        \"name\": \"อุดรธานี\"\n    },\n    {\n        \"id\": 41,\n        \"name\": \"อุตรดิตถ์\"\n    },\n    {\n        \"id\": 48,\n        \"name\": \"อุทัยธานี\"\n    },\n    {\n        \"id\": 23,\n        \"name\": \"อุบลราชธานี\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get districts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/address/getDistricts?id=1",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"address",
+								"getDistricts"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/address/getDistricts?id=1",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"address",
+										"getDistricts"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:48:28 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1033,\n        \"name\": \"เขตคลองเตย\"\n    },\n    {\n        \"id\": 1018,\n        \"name\": \"เขตคลองสาน\"\n    },\n    {\n        \"id\": 1046,\n        \"name\": \"เขตคลองสามวา\"\n    },\n    {\n        \"id\": 1043,\n        \"name\": \"เขตคันนายาว\"\n    },\n    {\n        \"id\": 1030,\n        \"name\": \"เขตจตุจักร\"\n    },\n    {\n        \"id\": 1035,\n        \"name\": \"เขตจอมทอง\"\n    },\n    {\n        \"id\": 1036,\n        \"name\": \"เขตดอนเมือง\"\n    },\n    {\n        \"id\": 1026,\n        \"name\": \"เขตดินแดง\"\n    },\n    {\n        \"id\": 1002,\n        \"name\": \"เขตดุสิต\"\n    },\n    {\n        \"id\": 1019,\n        \"name\": \"เขตตลิ่งชัน\"\n    },\n    {\n        \"id\": 1048,\n        \"name\": \"เขตทวีวัฒนา\"\n    },\n    {\n        \"id\": 1049,\n        \"name\": \"เขตทุ่งครุ\"\n    },\n    {\n        \"id\": 1015,\n        \"name\": \"เขตธนบุรี\"\n    },\n    {\n        \"id\": 1020,\n        \"name\": \"เขตบางกอกน้อย\"\n    },\n    {\n        \"id\": 1016,\n        \"name\": \"เขตบางกอกใหญ่\"\n    },\n    {\n        \"id\": 1006,\n        \"name\": \"เขตบางกะปิ\"\n    },\n    {\n        \"id\": 1021,\n        \"name\": \"เขตบางขุนเทียน\"\n    },\n    {\n        \"id\": 1005,\n        \"name\": \"เขตบางเขน\"\n    },\n    {\n        \"id\": 1031,\n        \"name\": \"เขตบางคอแหลม\"\n    },\n    {\n        \"id\": 1040,\n        \"name\": \"เขตบางแค\"\n    },\n    {\n        \"id\": 1029,\n        \"name\": \"เขตบางซื่อ\"\n    },\n    {\n        \"id\": 1047,\n        \"name\": \"เขตบางนา\"\n    },\n    {\n        \"id\": 1050,\n        \"name\": \"เขตบางบอน\"\n    },\n    {\n        \"id\": 1025,\n        \"name\": \"เขตบางพลัด\"\n    },\n    {\n        \"id\": 1004,\n        \"name\": \"เขตบางรัก\"\n    },\n    {\n        \"id\": 1027,\n        \"name\": \"เขตบึงกุ่ม\"\n    },\n    {\n        \"id\": 1007,\n        \"name\": \"เขตปทุมวัน\"\n    },\n    {\n        \"id\": 1032,\n        \"name\": \"เขตประเวศ\"\n    },\n    {\n        \"id\": 1008,\n        \"name\": \"เขตป้อมปราบศัตรูพ่าย\"\n    },\n    {\n        \"id\": 1014,\n        \"name\": \"เขตพญาไท\"\n    },\n    {\n        \"id\": 1009,\n        \"name\": \"เขตพระโขนง\"\n    },\n    {\n        \"id\": 1001,\n        \"name\": \"เขตพระนคร\"\n    },\n    {\n        \"id\": 1022,\n        \"name\": \"เขตภาษีเจริญ\"\n    },\n    {\n        \"id\": 1010,\n        \"name\": \"เขตมีนบุรี\"\n    },\n    {\n        \"id\": 1012,\n        \"name\": \"เขตยานนาวา\"\n    },\n    {\n        \"id\": 1037,\n        \"name\": \"เขตราชเทวี\"\n    },\n    {\n        \"id\": 1024,\n        \"name\": \"เขตราษฎร์บูรณะ\"\n    },\n    {\n        \"id\": 1011,\n        \"name\": \"เขตลาดกระบัง\"\n    },\n    {\n        \"id\": 1038,\n        \"name\": \"เขตลาดพร้าว\"\n    },\n    {\n        \"id\": 1045,\n        \"name\": \"เขตวังทองหลาง\"\n    },\n    {\n        \"id\": 1039,\n        \"name\": \"เขตวัฒนา\"\n    },\n    {\n        \"id\": 1034,\n        \"name\": \"เขตสวนหลวง\"\n    },\n    {\n        \"id\": 1044,\n        \"name\": \"เขตสะพานสูง\"\n    },\n    {\n        \"id\": 1013,\n        \"name\": \"เขตสัมพันธวงศ์\"\n    },\n    {\n        \"id\": 1028,\n        \"name\": \"เขตสาทร\"\n    },\n    {\n        \"id\": 1042,\n        \"name\": \"เขตสายไหม\"\n    },\n    {\n        \"id\": 1023,\n        \"name\": \"เขตหนองแขม\"\n    },\n    {\n        \"id\": 1003,\n        \"name\": \"เขตหนองจอก\"\n    },\n    {\n        \"id\": 1041,\n        \"name\": \"เขตหลักสี่\"\n    },\n    {\n        \"id\": 1017,\n        \"name\": \"เขตห้วยขวาง\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get sub districts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/address/getSubDistricts?id=1042",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"address",
+								"getSubDistricts"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1042"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/address/getDistricts?id=1",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"address",
+										"getDistricts"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 12:48:28 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1033,\n        \"name\": \"เขตคลองเตย\"\n    },\n    {\n        \"id\": 1018,\n        \"name\": \"เขตคลองสาน\"\n    },\n    {\n        \"id\": 1046,\n        \"name\": \"เขตคลองสามวา\"\n    },\n    {\n        \"id\": 1043,\n        \"name\": \"เขตคันนายาว\"\n    },\n    {\n        \"id\": 1030,\n        \"name\": \"เขตจตุจักร\"\n    },\n    {\n        \"id\": 1035,\n        \"name\": \"เขตจอมทอง\"\n    },\n    {\n        \"id\": 1036,\n        \"name\": \"เขตดอนเมือง\"\n    },\n    {\n        \"id\": 1026,\n        \"name\": \"เขตดินแดง\"\n    },\n    {\n        \"id\": 1002,\n        \"name\": \"เขตดุสิต\"\n    },\n    {\n        \"id\": 1019,\n        \"name\": \"เขตตลิ่งชัน\"\n    },\n    {\n        \"id\": 1048,\n        \"name\": \"เขตทวีวัฒนา\"\n    },\n    {\n        \"id\": 1049,\n        \"name\": \"เขตทุ่งครุ\"\n    },\n    {\n        \"id\": 1015,\n        \"name\": \"เขตธนบุรี\"\n    },\n    {\n        \"id\": 1020,\n        \"name\": \"เขตบางกอกน้อย\"\n    },\n    {\n        \"id\": 1016,\n        \"name\": \"เขตบางกอกใหญ่\"\n    },\n    {\n        \"id\": 1006,\n        \"name\": \"เขตบางกะปิ\"\n    },\n    {\n        \"id\": 1021,\n        \"name\": \"เขตบางขุนเทียน\"\n    },\n    {\n        \"id\": 1005,\n        \"name\": \"เขตบางเขน\"\n    },\n    {\n        \"id\": 1031,\n        \"name\": \"เขตบางคอแหลม\"\n    },\n    {\n        \"id\": 1040,\n        \"name\": \"เขตบางแค\"\n    },\n    {\n        \"id\": 1029,\n        \"name\": \"เขตบางซื่อ\"\n    },\n    {\n        \"id\": 1047,\n        \"name\": \"เขตบางนา\"\n    },\n    {\n        \"id\": 1050,\n        \"name\": \"เขตบางบอน\"\n    },\n    {\n        \"id\": 1025,\n        \"name\": \"เขตบางพลัด\"\n    },\n    {\n        \"id\": 1004,\n        \"name\": \"เขตบางรัก\"\n    },\n    {\n        \"id\": 1027,\n        \"name\": \"เขตบึงกุ่ม\"\n    },\n    {\n        \"id\": 1007,\n        \"name\": \"เขตปทุมวัน\"\n    },\n    {\n        \"id\": 1032,\n        \"name\": \"เขตประเวศ\"\n    },\n    {\n        \"id\": 1008,\n        \"name\": \"เขตป้อมปราบศัตรูพ่าย\"\n    },\n    {\n        \"id\": 1014,\n        \"name\": \"เขตพญาไท\"\n    },\n    {\n        \"id\": 1009,\n        \"name\": \"เขตพระโขนง\"\n    },\n    {\n        \"id\": 1001,\n        \"name\": \"เขตพระนคร\"\n    },\n    {\n        \"id\": 1022,\n        \"name\": \"เขตภาษีเจริญ\"\n    },\n    {\n        \"id\": 1010,\n        \"name\": \"เขตมีนบุรี\"\n    },\n    {\n        \"id\": 1012,\n        \"name\": \"เขตยานนาวา\"\n    },\n    {\n        \"id\": 1037,\n        \"name\": \"เขตราชเทวี\"\n    },\n    {\n        \"id\": 1024,\n        \"name\": \"เขตราษฎร์บูรณะ\"\n    },\n    {\n        \"id\": 1011,\n        \"name\": \"เขตลาดกระบัง\"\n    },\n    {\n        \"id\": 1038,\n        \"name\": \"เขตลาดพร้าว\"\n    },\n    {\n        \"id\": 1045,\n        \"name\": \"เขตวังทองหลาง\"\n    },\n    {\n        \"id\": 1039,\n        \"name\": \"เขตวัฒนา\"\n    },\n    {\n        \"id\": 1034,\n        \"name\": \"เขตสวนหลวง\"\n    },\n    {\n        \"id\": 1044,\n        \"name\": \"เขตสะพานสูง\"\n    },\n    {\n        \"id\": 1013,\n        \"name\": \"เขตสัมพันธวงศ์\"\n    },\n    {\n        \"id\": 1028,\n        \"name\": \"เขตสาทร\"\n    },\n    {\n        \"id\": 1042,\n        \"name\": \"เขตสายไหม\"\n    },\n    {\n        \"id\": 1023,\n        \"name\": \"เขตหนองแขม\"\n    },\n    {\n        \"id\": 1003,\n        \"name\": \"เขตหนองจอก\"\n    },\n    {\n        \"id\": 1041,\n        \"name\": \"เขตหลักสี่\"\n    },\n    {\n        \"id\": 1017,\n        \"name\": \"เขตห้วยขวาง\"\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Shipping",
+			"item": [
+				{
+					"name": "Get shipping rate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/shipping/rate",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"shipping",
+								"rate"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/shipping/rate",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"shipping",
+										"rate"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 13:16:10 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1,\n        \"name\": \"EMS\",\n        \"description\": null,\n        \"amount\": 50\n    },\n    {\n        \"id\": 2,\n        \"name\": \"Normal\",\n        \"description\": null,\n        \"amount\": 30\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Slip verify",
+					"item": [
+						{
+							"name": "Generate QRCode",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n   \"order_id\": \"019161cc-7cdd-7060-9a30-daa91a1705d2\" \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payment/slip/promptpay/createQrCode",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payment",
+										"slip",
+										"promptpay",
+										"createQrCode"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Response success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n   \"order_id\": \"01915b5a-71db-7433-96fe-0e31a9b8201e\" \n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{API_URL}}/payment/slip/promptpay/createQrCode",
+											"host": [
+												"{{API_URL}}"
+											],
+											"path": [
+												"payment",
+												"slip",
+												"promptpay",
+												"createQrCode"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 16 Aug 2024 13:34:08 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"amount\": 550,\n    \"qrcode\": \"00020101021229370016A0000006770101110113006688263762353037645802TH5406550.006304F76A\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Do proceed payment (Promptpay)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "order_id",
+											"value": "019161cc-7cdd-7060-9a30-daa91a1705d2",
+											"type": "text"
+										},
+										{
+											"key": "method",
+											"value": "PROMPTPAY",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/Users/m307/Downloads/IMG_3EB77425D575-1.jpeg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{API_URL}}/payment/slip/doProceed",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payment",
+										"slip",
+										"doProceed"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Something went wrong (Ex. IP Not allowed)",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "order_id",
+													"value": "01915b5a-71db-7433-96fe-0e31a9b8201e",
+													"type": "text"
+												},
+												{
+													"key": "method",
+													"value": "PROMPTPAY",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/Users/m307/Downloads/IMG_6581.JPG"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{API_URL}}/payment/slip/doProceed",
+											"host": [
+												"{{API_URL}}"
+											],
+											"path": [
+												"payment",
+												"slip",
+												"doProceed"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/problem+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 16 Aug 2024 13:35:47 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "close"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Bad Request\",\n    \"status\": 400,\n    \"detail\": \"Something went wrong. Please try again later\",\n    \"instance\": \"/payment/slip/doProceed\"\n}"
+								},
+								{
+									"name": "Response success paid",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "order_id",
+													"value": "019161cc-7cdd-7060-9a30-daa91a1705d2",
+													"type": "text"
+												},
+												{
+													"key": "method",
+													"value": "PROMPTPAY",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/Users/m307/Downloads/IMG_3EB77425D575-1.jpeg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{API_URL}}/payment/slip/doProceed",
+											"host": [
+												"{{API_URL}}"
+											],
+											"path": [
+												"payment",
+												"slip",
+												"doProceed"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 17 Aug 2024 19:42:40 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"amount\": 10,\n    \"currency\": \"THB\",\n    \"payment_id\": \"019161cc-7cda-7da0-bb34-3321b53ac1bc\"\n}"
+								},
+								{
+									"name": "Amount insufficient",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "order_id",
+													"value": "019161cc-7cdd-7060-9a30-daa91a1705d2",
+													"type": "text"
+												},
+												{
+													"key": "method",
+													"value": "PROMPTPAY",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/Users/m307/Downloads/IMG_3EB77425D575-1.jpeg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{API_URL}}/payment/slip/doProceed",
+											"host": [
+												"{{API_URL}}"
+											],
+											"path": [
+												"payment",
+												"slip",
+												"doProceed"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/problem+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 17 Aug 2024 19:43:12 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "close"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Bad Request\",\n    \"status\": 400,\n    \"detail\": \"Amount insufficient for this order\",\n    \"instance\": \"/payment/slip/doProceed\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Do proceed payment (Bank)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "order_id",
+											"value": "01915b5a-71db-7433-96fe-0e31a9b8201e",
+											"type": "text"
+										},
+										{
+											"key": "method",
+											"value": "BANK",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/Users/m307/Downloads/IMG_6581.JPG"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{API_URL}}/payment/slip/doProceed",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payment",
+										"slip",
+										"doProceed"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Something went wrong (Ex. IP Not allowed)",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "order_id",
+													"value": "01915b5a-71db-7433-96fe-0e31a9b8201e",
+													"type": "text"
+												},
+												{
+													"key": "method",
+													"value": "BANK",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/Users/m307/Downloads/IMG_6581.JPG"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{API_URL}}/payment/slip/doProceed",
+											"host": [
+												"{{API_URL}}"
+											],
+											"path": [
+												"payment",
+												"slip",
+												"doProceed"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/problem+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 16 Aug 2024 13:37:06 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "close"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Bad Request\",\n    \"status\": 400,\n    \"detail\": \"Something went wrong. Please try again later\",\n    \"instance\": \"/payment/slip/doProceed\"\n}"
+								},
+								{
+									"name": "Response success paid",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "order_id",
+													"value": "019161cc-7cda-7da0-bb34-3321b53ac1bc",
+													"type": "text"
+												},
+												{
+													"key": "method",
+													"value": "BANK",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/Users/m307/Downloads/IMG_6581.JPG"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{API_URL}}/payment/slip/doProceed",
+											"host": [
+												"{{API_URL}}"
+											],
+											"path": [
+												"payment",
+												"slip",
+												"doProceed"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/problem+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Fri, 16 Aug 2024 13:37:06 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "close"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"amount\": 10,\n    \"currency\": \"THB\",\n    \"payment_id\": \"019161cc-7cda-7da0-bb34-3321b53ac1bc\"\n}"
+								},
+								{
+									"name": "Amount insufficient",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "order_id",
+													"value": "019161cc-7cdd-7060-9a30-daa91a1705d2",
+													"type": "text"
+												},
+												{
+													"key": "method",
+													"value": "BANK",
+													"type": "text"
+												},
+												{
+													"key": "image",
+													"type": "file",
+													"src": "/Users/m307/Downloads/IMG_3EB77425D575-1.jpeg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{API_URL}}/payment/slip/doProceed",
+											"host": [
+												"{{API_URL}}"
+											],
+											"path": [
+												"payment",
+												"slip",
+												"doProceed"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Vary",
+											"value": "Origin"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Method"
+										},
+										{
+											"key": "Vary",
+											"value": "Access-Control-Request-Headers"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, no-store, max-age=0, must-revalidate"
+										},
+										{
+											"key": "Pragma",
+											"value": "no-cache"
+										},
+										{
+											"key": "Expires",
+											"value": "0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "DENY"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/problem+json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 17 Aug 2024 19:43:12 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "close"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Bad Request\",\n    \"status\": 400,\n    \"detail\": \"Amount insufficient for this order\",\n    \"instance\": \"/payment/slip/doProceed\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Truemoney envelop",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": \"01915bea-6f55-7f97-be1f-bfb67e9af466\",\n    \"url\": \"https://gift.truemoney.com/campaign/?v=0191420b881b7a1cabb0e8fb99180a15f1r\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/payment/truemoney/voucher/doProceed",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"payment",
+								"truemoney",
+								"voucher",
+								"doProceed"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Voucher expired",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"order_id\": \"01915b5a-71db-7433-96fe-0e31a9b8201e\",\n    \"url\": \"https://gift.truemoney.com/campaign/?v=0191420b881b7a1cabb0e8fb99180a15f1r\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payment/truemoney/voucher/doProceed",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payment",
+										"truemoney",
+										"voucher",
+										"doProceed"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/problem+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 13:44:52 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Bad Request\",\n    \"status\": 400,\n    \"detail\": \"Voucher is expired.\",\n    \"instance\": \"/payment/truemoney/voucher/doProceed\"\n}"
+						},
+						{
+							"name": "Order already proceed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"order_id\": \"01915b5a-71db-7433-96fe-0e31a9b8201e\",\n    \"url\": \"https://gift.truemoney.com/campaign/?v=0191420b881b7a1cabb0e8fb99180a15f1r\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payment/truemoney/voucher/doProceed",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payment",
+										"truemoney",
+										"voucher",
+										"doProceed"
+									]
+								}
+							},
+							"status": "Gone",
+							"code": 410,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/problem+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 13:47:36 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Gone\",\n    \"status\": 410,\n    \"detail\": \"Order has already been proceed\",\n    \"instance\": \"/payment/truemoney/voucher/doProceed\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Generate QRCode Promtpay",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": \"019161e4-fbdc-78e9-b2dd-a415fb2f73f6\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/payment/promptpay/createPayment",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"payment",
+								"promptpay",
+								"createPayment"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"order_id\": \"01915b72-62ba-771d-a696-b629c2ab1de6\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payment/promptpay/createPayment",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payment",
+										"promptpay",
+										"createPayment"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 13:48:45 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"amount\": 550,\n    \"qrcode\": \"00020101021230670115657594144866494022057GH1P522F3164D7EHBB032057GH1P522F3164D7EHBB5204701153037645405500.05802TH5908StoreApp6007BANGKOK62340523202408160848455220000000703SCB63044B15\"\n}"
+						},
+						{
+							"name": "Order already proceed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"order_id\": \"01915b5a-71db-7433-96fe-0e31a9b8201e\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payment/promptpay/createPayment",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payment",
+										"promptpay",
+										"createPayment"
+									]
+								}
+							},
+							"status": "Gone",
+							"code": 410,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/problem+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 13:47:20 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Gone\",\n    \"status\": 410,\n    \"detail\": \"Order has already been proceed\",\n    \"instance\": \"/payment/promptpay/createPayment\"\n}"
+						},
+						{
+							"name": "Create payment failed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"order_id\": \"019161e4-fbdc-78e9-b2dd-a415fb2f73f6\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payment/promptpay/createPayment",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payment",
+										"promptpay",
+										"createPayment"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/problem+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 17 Aug 2024 19:55:44 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Bad Request\",\n    \"status\": 400,\n    \"detail\": \"Create QR code failed. Please try again.\",\n    \"instance\": \"/payment/promptpay/createPayment\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Generate truemoney app",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{AUTHOIRZATION_ACCESS_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": \"01915bea-6f55-7f97-be1f-bfb67e9af466\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/payment/truemoney/createPayment",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"payment",
+								"truemoney",
+								"createPayment"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Response success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"order_id\": \"01915bea-6f55-7f97-be1f-bfb67e9af466\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payment/truemoney/createPayment",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payment",
+										"truemoney",
+										"createPayment"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 16:02:52 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"payUrl\": \"https://sandbox-cdnv3.chillpay.co/TrueMoney/08fd244c5773c3d743484b8814b5abed92a63b14/PaymentProcess\"\n}"
+						},
+						{
+							"name": "Order already proceed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"order_id\": \"01915bea-6f55-7f97-be1f-bfb67e9af466\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/payment/truemoney/createPayment",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"payment",
+										"truemoney",
+										"createPayment"
+									]
+								}
+							},
+							"status": "Gone",
+							"code": 410,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/problem+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 16 Aug 2024 16:03:33 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"type\": \"about:blank\",\n    \"title\": \"Gone\",\n    \"status\": 410,\n    \"detail\": \"Order has already been proceed\",\n    \"instance\": \"/payment/truemoney/createPayment\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Callback",
+			"item": [
+				{
+					"name": "Thailandpost Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer THIS_IS_A_SECRET_TOKEN_PLEASE_NOT_SHARE_BTW_FURINA_CUTE",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "test",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"items\": [\n    {\n      \"barcode\": \"EY999999998TH\",\n      \"status\": \"103\",\n      \"status_description\": \"รับฝาก\",\n      \"status_date\": \"04/06/2562 15:53:22+07:00\",\n      \"statusDetail\": \"รับฝากสิ่งของ [ที่ทำการไปรษณีย์ ศูนย์ศิลปาชีพบางไทร]\",\n      \"location\": \"ศูนย์ศิลปาชีพบางไทร\",\n      \"postcode\": \"13290\",\n      \"delivery_status\": null,\n      \"delivery_description\": null,\n      \"delivery_datetime\": null,\n      \"receiver_name\": null,\n      \"signature\": null,\n      \"delivery_officer_name\": null,\n      \"delivery_officer_tel\": null,\n      \"office_name\": null,\n      \"office_tel\": null,\n      \"call_center_tel\": \"1545\"\n    },\n    {\n      \"barcode\": \"EY999999998TH\",\n      \"status\": \"201\",\n      \"status_description\": \"อยู่ระหว่างการขนส่ง\",\n      \"status_date\": \"05/06/2562 14:42:03+07:00\",\n      \"statusDetail\": \"สิ่งของส่งออกจาก [ที่ทำการไปรษณีย์ ศูนย์ศิลปาชีพบางไทร] ไปยัง [ศูนย์คัดแยกหลักสี่]\",\n      \"location\": \"ศูนย์ศิลปาชีพบางไทร\",\n      \"postcode\": \"13290\",\n      \"delivery_status\": null,\n      \"delivery_description\": null,\n      \"delivery_datetime\": null,\n      \"receiver_name\": null,\n      \"signature\": null,\n      \"delivery_officer_name\": null,\n      \"delivery_officer_tel\": null,\n      \"office_name\": null,\n      \"office_tel\": null,\n      \"call_center_tel\": \"1545\"\n    }\n  ],\n  \"track_datetime\": \"10/09/2562 10:17+07:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_URL}}/shipping/callback/thailandPost",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"shipping",
+								"callback",
+								"thailandPost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SCB Callback",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API_URL}}/payment/callback/scb/completed",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"payment",
+								"callback",
+								"scb",
+								"completed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Chillpay Callback",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "TransactionId",
+									"value": "334395",
+									"type": "text"
+								},
+								{
+									"key": "Amount",
+									"value": "5000",
+									"type": "text"
+								},
+								{
+									"key": "OrderNo",
+									"value": "TTPRGAC5HZMM1P5DX147",
+									"type": "text"
+								},
+								{
+									"key": "CustomerId",
+									"value": "TTPRGAC5HZMM1P5DX147",
+									"type": "text"
+								},
+								{
+									"key": "BankCode",
+									"value": "epayment_truemoney",
+									"type": "text"
+								},
+								{
+									"key": "PaymentDate",
+									"value": "20240816230313",
+									"type": "text"
+								},
+								{
+									"key": "PaymentStatus",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "BankRefCode",
+									"value": "638594461929383456",
+									"type": "text"
+								},
+								{
+									"key": "CurrentDate",
+									"value": "20240816",
+									"type": "text"
+								},
+								{
+									"key": "CurrentTime",
+									"value": "230314",
+									"type": "text"
+								},
+								{
+									"key": "PaymentDescription",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "CreditCardToken",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "Currency",
+									"value": "764",
+									"type": "text"
+								},
+								{
+									"key": "CustomerName",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "CheckSum",
+									"value": "f47c97f0ff841f9a6b16573298bfb673",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_URL}}/payment/callback/chillpay/completed",
+							"host": [
+								"{{API_URL}}"
+							],
+							"path": [
+								"payment",
+								"callback",
+								"chillpay",
+								"completed"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Callback พวก SCB, Chillpay และ Thailand post"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_URL",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "AUTHOIRZATION_ACCESS_TOKEN",
+			"value": ""
+		}
+	]
+}
