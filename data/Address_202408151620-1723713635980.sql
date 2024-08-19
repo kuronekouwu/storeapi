@@ -1,0 +1,85 @@
+INSERT INTO public.address_provices (id,name_en,name_th) VALUES
+	 (1,'Bangkok','กรุงเทพมหานคร'),
+	 (2,'Samut Prakan','สมุทรปราการ'),
+	 (3,'Nonthaburi','นนทบุรี'),
+	 (4,'Pathum Thani','ปทุมธานี'),
+	 (5,'Phra Nakhon Si Ayutthaya','พระนครศรีอยุธยา'),
+	 (6,'Ang Thong','อ่างทอง'),
+	 (7,'Loburi','ลพบุรี'),
+	 (8,'Sing Buri','สิงห์บุรี'),
+	 (9,'Chai Nat','ชัยนาท'),
+	 (10,'Saraburi','สระบุรี');
+INSERT INTO public.address_provices (id,name_en,name_th) VALUES
+	 (11,'Chon Buri','ชลบุรี'),
+	 (12,'Rayong','ระยอง'),
+	 (13,'Chanthaburi','จันทบุรี'),
+	 (14,'Trat','ตราด'),
+	 (15,'Chachoengsao','ฉะเชิงเทรา'),
+	 (16,'Prachin Buri','ปราจีนบุรี'),
+	 (17,'Nakhon Nayok','นครนายก'),
+	 (18,'Sa Kaeo','สระแก้ว'),
+	 (19,'Nakhon Ratchasima','นครราชสีมา'),
+	 (20,'Buri Ram','บุรีรัมย์');
+INSERT INTO public.address_provices (id,name_en,name_th) VALUES
+	 (21,'Surin','สุรินทร์'),
+	 (22,'Si Sa Ket','ศรีสะเกษ'),
+	 (23,'Ubon Ratchathani','อุบลราชธานี'),
+	 (24,'Yasothon','ยโสธร'),
+	 (25,'Chaiyaphum','ชัยภูมิ'),
+	 (26,'Amnat Charoen','อำนาจเจริญ'),
+	 (27,'Nong Bua Lam Phu','หนองบัวลำภู'),
+	 (28,'Khon Kaen','ขอนแก่น'),
+	 (29,'Udon Thani','อุดรธานี'),
+	 (30,'Loei','เลย');
+INSERT INTO public.address_provices (id,name_en,name_th) VALUES
+	 (31,'Nong Khai','หนองคาย'),
+	 (32,'Maha Sarakham','มหาสารคาม'),
+	 (33,'Roi Et','ร้อยเอ็ด'),
+	 (34,'Kalasin','กาฬสินธุ์'),
+	 (35,'Sakon Nakhon','สกลนคร'),
+	 (36,'Nakhon Phanom','นครพนม'),
+	 (37,'Mukdahan','มุกดาหาร'),
+	 (38,'Chiang Mai','เชียงใหม่'),
+	 (39,'Lamphun','ลำพูน'),
+	 (40,'Lampang','ลำปาง');
+INSERT INTO public.address_provices (id,name_en,name_th) VALUES
+	 (41,'Uttaradit','อุตรดิตถ์'),
+	 (42,'Phrae','แพร่'),
+	 (43,'Nan','น่าน'),
+	 (44,'Phayao','พะเยา'),
+	 (45,'Chiang Rai','เชียงราย'),
+	 (46,'Mae Hong Son','แม่ฮ่องสอน'),
+	 (47,'Nakhon Sawan','นครสวรรค์'),
+	 (48,'Uthai Thani','อุทัยธานี'),
+	 (49,'Kamphaeng Phet','กำแพงเพชร'),
+	 (50,'Tak','ตาก');
+INSERT INTO public.address_provices (id,name_en,name_th) VALUES
+	 (51,'Sukhothai','สุโขทัย'),
+	 (52,'Phitsanulok','พิษณุโลก'),
+	 (53,'Phichit','พิจิตร'),
+	 (54,'Phetchabun','เพชรบูรณ์'),
+	 (55,'Ratchaburi','ราชบุรี'),
+	 (56,'Kanchanaburi','กาญจนบุรี'),
+	 (57,'Suphan Buri','สุพรรณบุรี'),
+	 (58,'Nakhon Pathom','นครปฐม'),
+	 (59,'Samut Sakhon','สมุทรสาคร'),
+	 (60,'Samut Songkhram','สมุทรสงคราม');
+INSERT INTO public.address_provices (id,name_en,name_th) VALUES
+	 (61,'Phetchaburi','เพชรบุรี'),
+	 (62,'Prachuap Khiri Khan','ประจวบคีรีขันธ์'),
+	 (63,'Nakhon Si Thammarat','นครศรีธรรมราช'),
+	 (64,'Krabi','กระบี่'),
+	 (65,'Phangnga','พังงา'),
+	 (66,'Phuket','ภูเก็ต'),
+	 (67,'Surat Thani','สุราษฎร์ธานี'),
+	 (68,'Ranong','ระนอง'),
+	 (69,'Chumphon','ชุมพร'),
+	 (70,'Songkhla','สงขลา');
+INSERT INTO public.address_provices (id,name_en,name_th) VALUES
+	 (71,'Satun','สตูล'),
+	 (72,'Trang','ตรัง'),
+	 (73,'Phatthalung','พัทลุง'),
+	 (74,'Pattani','ปัตตานี'),
+	 (75,'Yala','ยะลา'),
+	 (76,'Narathiwat','นราธิวาส'),
+	 (77,'buogkan','บึงกาฬ');

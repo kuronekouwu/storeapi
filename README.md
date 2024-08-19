@@ -34,6 +34,7 @@ Maybe if I bought or find trial IntelliJ IDEA
 - Create `application.yaml` file
 - Enter this [config](https://github.com/mrwan200/storeapi/blob/main/src/main/resources/application.yaml)
 - Run `java -jar storeapi.jar`
+- After run complete. import SQL address in [data](./data)
 
 # API Document
 - [Postman](./docs/StoreAPI.postman_collection.json)
