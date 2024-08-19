@@ -1,6 +1,9 @@
 # StoreAPI
 I'm just learning Object oriented programming (OOP) and Web RESTFul API. Because in this month I so very burn out and depressed my heart 🥲
 
+## Can you continue this project
+Maybe if I bought or find trial IntelliJ IDEA
+
 # Requirement
 - [Java 21 or higher](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 - [PostgreSQL](https://www.postgresql.org/) 
