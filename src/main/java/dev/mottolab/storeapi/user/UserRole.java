@@ -13,12 +13,17 @@ import java.util.stream.Collectors;
 public enum UserRole {
     USER(Collections.emptySet()),
     ADMIN(Set.of(
+            // Product
             UserPermission.PRODUCT_CREATE,
             UserPermission.PRODUCT_DELETE,
             UserPermission.PRODUCT_UPDATE,
+            // Category
             UserPermission.CATEGORY_CREATE,
             UserPermission.CATEGORY_UPDATE,
-            UserPermission.CATEGORY_DELETE
+            UserPermission.CATEGORY_DELETE,
+            // Order
+            UserPermission.ORDER_TRACKING_CREATE,
+            UserPermission.ORDER_UPDATE
     ));
 
     @Getter

@@ -12,7 +12,10 @@ public enum UserPermission {
     // Category
     CATEGORY_CREATE("category:create"),
     CATEGORY_UPDATE("category:update"),
-    CATEGORY_DELETE("category:delete");
+    CATEGORY_DELETE("category:delete"),
+    // Order
+    ORDER_TRACKING_CREATE("order:tracking_create"),
+    ORDER_UPDATE("order:update");
 
     @Getter
     private final String permission;
