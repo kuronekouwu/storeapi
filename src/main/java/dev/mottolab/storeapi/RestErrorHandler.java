@@ -13,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -188,6 +189,16 @@ public class RestErrorHandler {
     @ResponseBody
     public MissingServletRequestParameterException missingServletRequestParameterException(MissingServletRequestParameterException ex) {
         return ex;
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ResponseStatusException missingServletRequestHeaderException(MissingRequestHeaderException ex) {
+        return new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                ex.getLocalizedMessage()
+        );
     }
 
     @ExceptionHandler(HandlerMethodValidationException.class)
