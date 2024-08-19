@@ -14,17 +14,19 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          time_zone: "UTC"
 
 config:
   jwt:
-    secretKey: "SE9XX0XPTKDFVE9FQUXJVKVFOICPXPTKDFVELVU"
-    issuer: "mottoshop"
+    secretKey: "FURINA_SO_CUTE_UWU"
+    issuer: "storeapi"
   payment:
     scb:
       apiUrl: "https://api-sandbox.partners.scb"
       clientId: ""
       clientSecret: ""
-      merchantId: ""
+      merchantId: " "
     chillpay:
       apiUrl: "https://sandbox-appsrv2.chillpay.co"
       merchantId: ""
@@ -36,12 +38,16 @@ config:
       clientSecret: ""
       postpaid: "0"
     tmn_voucher:
-      mobile: ""
+      mobile: "0881112222"
       rate: "2.3"
     promptpay:
       type: "MSISDN"
-      value: ""
+      value: "0882637623"
     bank:
-      bankCode: ""
+      bankCode: "004"
       bankAccount: ""
-      bankAccountName: ""
+      bankAccountName: "Mr. John doe"
+  tracking:
+    thailandpost:
+      token: ""
+      webhook: "THIS_IS_A_SECRET_TOKEN_PLEASE_NOT_SHARE_BTW_FURINA_CUTE"
