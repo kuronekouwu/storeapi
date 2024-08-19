@@ -31,9 +31,7 @@ public class RestErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ValidateErrorDTO invalidDataHandler(MethodArgumentNotValidException ex) {
         ValidateErrorDTO validateErrorDTO = new ValidateErrorDTO();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            validateErrorDTO.addFieldError(((FieldError) error).getField(), error.getDefaultMessage());
-        });
+        ex.getBindingResult().getAllErrors().forEach(error -> validateErrorDTO.addFieldError(((FieldError) error).getField(), error.getDefaultMessage()));
         return validateErrorDTO;
     }
 
