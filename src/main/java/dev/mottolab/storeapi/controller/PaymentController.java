@@ -111,7 +111,7 @@ public class PaymentController {
                 throw new PaymentMismatch();
             }
 
-            data = this.paymentService.doProceedViaSlipVerifyByBankAccount(file.getBytes());
+            data = this.paymentService.doProceedViaSlipVerifyByBankAccount(file.getBytes(), order);
         }else if(method == SlipMethodDTO.PROMPTPAY){
             if(order.getPayment().getMethod() != PaymentMethod.SLIP_VERIFY_VIA_PROMPTPAY){
                 throw new PaymentMismatch();
@@ -208,6 +208,10 @@ public class PaymentController {
 
             PromptpayCreateResult ppResult = this.paymentService.generatePromtpayQRCodeBySCB(payment);
 
+            if(ppResult == null){
+                throw new PaymentProceedFail("Create QR code failed. Please try again.");
+            }
+
             // Get QRCode
             String ppRaw = ppResult.getData().getQrRawData();
 
@@ -254,6 +258,10 @@ public class PaymentController {
         payment.setTransactionId(transactionId);
 
         PaymentCreateURLResult payResult = this.paymentService.generateTruemoneyPaymentURLByChillPay(payment);
+
+        if(payResult == null){
+            throw new PaymentProceedFail("Create payment URL failed. Please try again.");
+        }
 
         // Create entity
         payment.setRef1(String.valueOf(payResult.TransactionId));

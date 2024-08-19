@@ -85,7 +85,7 @@ public class PaymentService {
             if(result.getData().getVoucher().available != 1){
                 throw new PaymentProceedFail("Voucher available must be only one person redeem");
             }
-            if(Double.parseDouble(result.getData().getVoucher().amountBaht) != order.getPayment().getAmount()){
+            if(!Objects.equals(Double.parseDouble(result.getData().getVoucher().amountBaht), order.getPayment().getAmount())){
                 throw new PaymentProceedFail("Amount insufficient for this order");
             }
 
@@ -103,30 +103,36 @@ public class PaymentService {
 
         String recieveProxyType = data.receiver.proxy.type;
         String recieveAccount = data.receiver.proxy.value;
+
         if(
-                (recieveProxyType != null &&  recieveProxyType.equalsIgnoreCase(this.ppMethod))||
-                ValidatorService.checkMatchString(ppValue, recieveAccount) < 3
+                !(recieveProxyType != null && recieveProxyType.equalsIgnoreCase(this.ppMethod))||
+                ValidatorService.checkMatchString(this.ppValue, recieveAccount) < 3
         ){
             throw new PaymentProceedFail("Slip receiver incorrect.");
         }
 
-        if(data.getAmount() != order.getPayment().getAmount()){
+        if(!Objects.equals(data.getAmount(), order.getPayment().getAmount())){
             throw new PaymentProceedFail("Amount insufficient for this order");
         }
 
         return slip;
     }
 
-    public SlipVerifyResponse doProceedViaSlipVerifyByBankAccount(byte[] file) throws IOException, NotFoundException, SlipVerifyError {
+    public SlipVerifyResponse doProceedViaSlipVerifyByBankAccount(byte[] file, OrderEntity order) throws IOException, NotFoundException, SlipVerifyError {
         SlipVerifyResponse slip = getSlipInformationByImage(file);
         SlipVerifyResponse.Data data = slip.getData();
 
         String recieveAccount = data.receiver.account.value;
         String recieveBank = data.receivingBank;
         if(
-                (recieveBank != null && !Objects.equals(recieveBank, this.bankAccount)) ||  ValidatorService.checkMatchString(ppValue, recieveAccount) < 3
+               !(recieveBank != null && !Objects.equals(recieveBank, this.bankAccount)) ||
+                        ValidatorService.checkMatchString(ppValue, recieveAccount) < 3
         ){
             throw new PaymentProceedFail("Slip receiver incorrect.");
+        }
+
+        if(!Objects.equals(data.getAmount(), order.getPayment().getAmount())){
+            throw new PaymentProceedFail("Amount insufficient for this order");
         }
 
         return slip;
