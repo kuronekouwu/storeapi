@@ -3,6 +3,7 @@ package dev.mottolab.storeapi.user;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum UserPermission {
     // Product
@@ -17,6 +18,5 @@ public enum UserPermission {
     ORDER_TRACKING_CREATE("order:tracking_create"),
     ORDER_UPDATE("order:update");
 
-    @Getter
     private final String permission;
 }

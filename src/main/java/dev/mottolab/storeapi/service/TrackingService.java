@@ -1,6 +1,5 @@
 package dev.mottolab.storeapi.service;
 
-import dev.mottolab.storeapi.entity.ShippingEntity;
 import dev.mottolab.storeapi.entity.ShippingTrackerEntity;
 import dev.mottolab.storeapi.provider.thailandpost.ThailandPostProvider;
 import dev.mottolab.storeapi.repository.ShippingTrackerRepository;

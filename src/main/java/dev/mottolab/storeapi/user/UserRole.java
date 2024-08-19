@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Getter
 @RequiredArgsConstructor
 public enum UserRole {
     USER(Collections.emptySet()),
@@ -26,7 +27,6 @@ public enum UserRole {
             UserPermission.ORDER_UPDATE
     ));
 
-    @Getter
     private final Set<UserPermission> permissions;
 
     public List<SimpleGrantedAuthority> getAuthorities() {
