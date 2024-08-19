@@ -4,6 +4,9 @@ public class ValidatorService {
     public static int checkMatchString(String str1, String str2) {
         int matchCount = 0;
 
+        str1 = str1.replaceAll("-", "");
+        str2 = str2.replaceAll("-", "");
+
         // Ensure both strings are of the same length
         if (str1.length() == str2.length()) {
             // Compare characters at the same position in both strings
