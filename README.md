@@ -20,7 +20,7 @@ Maybe if I bought or find trial IntelliJ IDEA
 - [x] CRUD Product / Category
 - [x] Create, Update basket
 - [ ] Delete basket item
-- [x] CRU (Create, Get list, and info)
+- [x] CR Order (Create, Get list, and info)
 - [x] Payment 
 - [x] Tracking shipping
 - [x] Manual user address
